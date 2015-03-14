@@ -16,6 +16,7 @@
 
 @implementation GameHistoryViewController
 
+//Set up text view contents when view loads
 -(void)viewDidLoad{
     [super viewDidLoad];
     for(NSAttributedString *status in self.statusHistory){
