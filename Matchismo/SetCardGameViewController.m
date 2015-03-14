@@ -13,6 +13,7 @@
 
 @implementation SetCardGameViewController
 
+//Send status history to destination view controller
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
     if([segue.identifier isEqualToString:@"history for set card"]){
         GameHistoryViewController *ghvc = (GameHistoryViewController *)segue.destinationViewController;
@@ -24,10 +25,12 @@
     return [[SetCardDeck alloc] init];
 }
 
+//Check if card is chosen through UI
 -(BOOL)isCardButtonChosen:(UIButton *)cardButton{
     return [cardButton.currentBackgroundImage isEqual:[UIImage imageNamed:@"chosen"]];
 }
 
+//Check if card is chosen but not matched through UI
 -(BOOL)isCardButtonChosenAndNotMatched:(UIButton *)cardButton{
     BOOL chosen = NO;
     
@@ -41,6 +44,7 @@
     return [UIImage imageNamed:card.isChosen ? @"chosen":@"cardfront"];
 }
 
+//Set the title for card
 -(NSAttributedString *)titleForCard:(Card *)card{
     
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] init];
@@ -56,6 +60,7 @@
     return attributedString;
 }
 
+//Method to add color and shading to set card button titles
 +(NSMutableAttributedString *)draw:(NSMutableAttributedString *)attString with:(NSString *)color and: (NSString *)shading{
     
     UIColor *cardColor;
@@ -89,6 +94,7 @@
     return attributedString;
 }
 
+//Method to draw shapes and their respective numbers on set cards
 +(NSMutableAttributedString *)draw:(int)number ofShape:(NSString *)shape{
     NSMutableString *attString = [[NSMutableString alloc] init];
     

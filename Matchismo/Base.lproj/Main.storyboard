@@ -834,7 +834,7 @@
         <!--Game History-->
         <scene sceneID="T3m-0b-rCo">
             <objects>
-                <viewController id="cvf-82-LLn" customClass="GameHistoryViewController" sceneMemberID="viewController">
+                <viewController modalTransitionStyle="partialCurl" id="cvf-82-LLn" customClass="GameHistoryViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="cW0-8r-V9l"/>
                         <viewControllerLayoutGuide type="bottom" id="5sI-MF-eHZ"/>
@@ -843,9 +843,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gmg-2q-jda">
-                                <rect key="frame" x="16" y="72" width="288" height="439"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xCV-Xd-tjj">
+                                <rect key="frame" x="0.0" y="64" width="320" height="455"/>
+                                <color key="backgroundColor" red="0.80000001192092896" green="0.80000001192092896" blue="0.80000001192092896" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
@@ -854,7 +854,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Game History" id="jIK-R4-HQq"/>
                     <connections>
-                        <outlet property="gameHistory" destination="gmg-2q-jda" id="iWR-u3-tcg"/>
+                        <outlet property="gameHistory" destination="xCV-Xd-tjj" id="U3V-Io-9Tc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pfU-nu-2gH" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -920,6 +920,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="QIc-7n-EFM"/>
+        <segue reference="jFQ-56-8EV"/>
     </inferredMetricsTieBreakers>
 </document>

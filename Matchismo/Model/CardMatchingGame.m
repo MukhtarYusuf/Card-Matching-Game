@@ -27,6 +27,7 @@ NSMutableArray *chosenCards;
     return _cards;
 }
 
+//Designated Initializer
 - (instancetype)initWithCardCount:(NSUInteger)count usingDeck:(Deck *)deck{
     self = [super init];
     
@@ -46,10 +47,12 @@ NSMutableArray *chosenCards;
     return self;
 }
 
+//Return card at index
 - (Card *)cardAtIndex:(NSUInteger)index{
     return (index < [self.cards count]) ? self.cards[index] : nil;
 }
 
+//Select card at index and perform operations
 - (void)chooseCardAtIndex:(NSUInteger)index{
     
     if(!chosenCards){
@@ -101,6 +104,7 @@ NSMutableArray *chosenCards;
     }
 }
 
+//Update score and card status for match
 -(void)updateGameForMatch:(Card *)chosenCard forScore:(int)score{
     self.score += score * MATCH_BONUS;
     chosenCard.matched = YES;
@@ -112,6 +116,7 @@ NSMutableArray *chosenCards;
     [chosenCards removeAllObjects];
 }
 
+//Update score and cards status for mismatch
 -(void)updateGameForMismatch:(Card *)chosenCard{
     self.score -= MISMATCH_PENALTY;
     

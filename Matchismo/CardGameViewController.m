@@ -24,12 +24,14 @@
 int gameModeNumber = 0;
 long score = 0;
 long oldScore = 0;
+
 NSInteger chosenButtonIndex = 0;
 NSAttributedString *attributedTitle;
 NSMutableAttributedString *chosenCardsContents;
 NSMutableArray *chosenCardContentsArray;
 NSMutableArray *chosenCardButtons;
 
+//Change between 2 and 3 card mode
 - (IBAction)changeGameMode:(UISwitch *)sender{
     CardMatchingGame *aGame = self.game;
     aGame.threeCardGame = sender.isOn;
@@ -37,6 +39,7 @@ NSMutableArray *chosenCardButtons;
     NSLog(@"%i", aGame.threeCardGame); //Testing card game mode
 }
 
+//Reset the game
 - (IBAction)dealAgain{
     self.game = [self createGame];
     [chosenCardButtons removeAllObjects];
@@ -47,10 +50,13 @@ NSMutableArray *chosenCardButtons;
     [self updateUI];
 }
 
+//Getter for CardMatchingGame
 - (CardMatchingGame *)game{
     if(!_game) _game = [self createGame];
     return _game;
 }
+
+//Getter for Array that stores history of statuses
 - (NSMutableArray *)statusHistory{
     if (!_statusHistory)
         _statusHistory = [[NSMutableArray alloc] init];
@@ -58,10 +64,12 @@ NSMutableArray *chosenCardButtons;
     return _statusHistory;
 }
 
+//Implemented in subclasses
 - (Deck *)createDeck{
     return nil;
 }
 
+//When a card button is touched
 - (IBAction)touchCardButton:(UIButton *)sender {
     if(!chosenCardButtons) chosenCardButtons = [[NSMutableArray alloc] init];
     if(self.game.threeCardGame)
@@ -76,6 +84,7 @@ NSMutableArray *chosenCardButtons;
     [self updateUI];
 }
 
+//Update UI elements for each card button touch
 - (void)updateUI{
     for(UIButton *cardButton in self.cardButtons){
         NSInteger cardButtonIndex = [self.cardButtons indexOfObject:cardButton];
@@ -98,6 +107,7 @@ NSMutableArray *chosenCardButtons;
     self.scoreLabel.text = [NSString stringWithFormat:@"Score: %li", self.game.score];
 }
 
+//Adding attrubuted titles to array for easy access
 -(void)addAttributedTitleToArray:(UIButton *)button{
     if(!chosenCardContentsArray)
         chosenCardContentsArray = [[NSMutableArray alloc] init];
@@ -115,6 +125,7 @@ NSMutableArray *chosenCardButtons;
     }
 }
 
+//Remove new lines from attributed titles for display in status
 -(NSAttributedString *)removeNewlinesFromAttributedString:(NSAttributedString *)attributedString{
     NSDictionary *attributes = [attributedString attributesAtIndex:0 effectiveRange:nil];
     NSString *title = [attributedString string];
@@ -123,10 +134,11 @@ NSMutableArray *chosenCardButtons;
     return [[NSAttributedString alloc] initWithString:title attributes:attributes];
 }
 
+//Get complete game status
 - (NSAttributedString *)getGameStatusForLastChosenCard:(UIButton *)cardButton{
     
     NSMutableAttributedString *status;
-    if(!cardButton.isEnabled){
+    if(!cardButton.isEnabled){//Match was found
         status = [[NSMutableAttributedString alloc] initWithString:@"Status: Match Found in "];
         [self createAttributedStringFromCardContents];
         [status appendAttributedString:chosenCardsContents];
@@ -134,7 +146,7 @@ NSMutableArray *chosenCardButtons;
         [chosenCardButtons removeAllObjects];
         [chosenCardContentsArray removeAllObjects];
     }
-    else if(score == -2){
+    else if(score == -2){//Match was not found
         status = [[NSMutableAttributedString alloc] initWithString:@"Status: Match not Found in "];
         [self createAttributedStringFromCardContents];
         [status appendAttributedString:chosenCardsContents];
@@ -145,17 +157,18 @@ NSMutableArray *chosenCardButtons;
         [self addAttributedTitleToArray:cardButton];
         [self createAttributedStringFromCardContents];
     }
-    else if([chosenCardButtons count] >= 1 && [chosenCardButtons count] <= gameModeNumber-1 && cardButton.isEnabled){
+    else if([chosenCardButtons count] >= 1 && [chosenCardButtons count] <= gameModeNumber-1 && cardButton.isEnabled){//Cards are chosen but not matched
         status = [[NSMutableAttributedString alloc] initWithString:@"Status: Selected Card is  "];
         [status appendAttributedString:[self removeNewlinesFromAttributedString:cardButton.currentAttributedTitle]];
     }
-    else if([chosenCardButtons count] == 0){
+    else if([chosenCardButtons count] == 0){//No cards are chosen
         status = [[NSMutableAttributedString alloc] initWithString:@"Status: "];
     }
     [self.statusHistory addObject:status];
     return status;
 }
 
+//Create attributed string from array of attributed titles
 -(void)createAttributedStringFromCardContents{
     if(!chosenCardsContents)
         chosenCardsContents = [[NSMutableAttributedString alloc] init];
@@ -165,6 +178,7 @@ NSMutableArray *chosenCardButtons;
     }
 }
 
+//Check chosen cards array for unchosen buttons
 -(void)checkForUnchosenCardButtons:(NSMutableArray *)cardButtons{
     NSArray *cardButtonsCopy = [cardButtons copy];
     for(UIButton *cardButton in cardButtonsCopy){
@@ -178,10 +192,12 @@ NSMutableArray *chosenCardButtons;
     }
 }
 
+//Implemented in subclasses
 -(BOOL)isCardButtonChosen:(UIButton *)cardButton{
     return nil;
 }
 
+//Implemented in subclasses
 -(BOOL)isCardButtonChosenAndNotMatched:(UIButton *)cardButton{
     return nil;
 }
@@ -194,10 +210,12 @@ NSMutableArray *chosenCardButtons;
     return [UIImage imageNamed:card.isChosen ? @"cardfront" : @"cardback"];
 }
 
+//Create and return an instance of the Card matching game
 - (CardMatchingGame *)createGame{
     return [[CardMatchingGame alloc] initWithCardCount:[self.cardButtons count] usingDeck:[self createDeck]];
 }
 
+//Perform initial setup
 - (void)viewDidLoad{
     [super viewDidLoad];
     [self.threeCardGameSwitch setOn:NO];

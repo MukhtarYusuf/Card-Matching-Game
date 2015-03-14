@@ -10,6 +10,7 @@
 
 @implementation SetCard
 
+//Override match method
 -(int)match:(NSArray *)otherCards{//otherCards alwasy has length 2
     int score = 0;
     

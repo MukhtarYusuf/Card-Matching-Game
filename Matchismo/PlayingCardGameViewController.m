@@ -15,6 +15,7 @@
 
 @implementation PlayingCardGameViewController
 
+//Send Status History to destination view controller
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
     if([segue.identifier isEqualToString:@"history for playing card"]){
         GameHistoryViewController *ghvc = (GameHistoryViewController *)segue.destinationViewController;
@@ -26,10 +27,12 @@
     return [[PlayingCardDeck alloc] init];
 }
 
+//Method to check if card is chosen through UI
 -(BOOL)isCardButtonChosen:(UIButton *)cardButton{
     return [cardButton.currentBackgroundImage isEqual:[UIImage imageNamed:@"cardfront"]];
 }
 
+//Method to check if card is chosen but not matched through UI
 -(BOOL)isCardButtonChosenAndNotMatched:(UIButton *)cardButton{
     BOOL chosen = NO;
     
