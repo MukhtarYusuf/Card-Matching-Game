@@ -11,7 +11,7 @@
 @implementation SetCard
 
 //Override match method
--(int)match:(NSArray *)otherCards{//otherCards alwasy has length 2
+-(int)match:(NSArray *)otherCards{//otherCards always has length 2
     int score = 0;
     
     if([SetCard checkNumbersFor:self with:otherCards] && [SetCard checkShapesFor:self with:otherCards] && [SetCard checkShadingsFor:self with:otherCards] && [SetCard checkColorsFor:self with:otherCards]){
@@ -101,7 +101,6 @@
                 isSet = YES;
             }
         }
-
     }
     return isSet;
 }

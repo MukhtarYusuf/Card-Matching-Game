@@ -84,7 +84,7 @@ NSMutableArray *chosenCardButtons;
     [self updateUI];
 }
 
-//Update UI elements for each card button touch
+//Update UI elements for each card button touch and other events
 - (void)updateUI{
     for(UIButton *cardButton in self.cardButtons){
         NSInteger cardButtonIndex = [self.cardButtons indexOfObject:cardButton];
