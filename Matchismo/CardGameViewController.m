@@ -116,6 +116,7 @@ NSMutableArray *chosenCardButtons;
     [chosenCardContentsArray addObject:attributedTitle];
 }
 
+//Removing attributed titles from array
 -(void)removeAttributedTitleFromArray:(NSAttributedString *)attributedTitle{
     NSArray *chosenCardContentsCopyArray = [chosenCardContentsArray copy];
     for(NSAttributedString *attrString in chosenCardContentsCopyArray){
