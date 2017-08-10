@@ -10,6 +10,9 @@
 
 @interface  CardGameViewController()
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
+@property (weak, nonatomic) IBOutlet UILabel *totalTimeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *subTimeLabel;
+
 
 @property (strong, nonatomic) CardMatchingGame *game;
 @property (strong, nonatomic) UIDynamicAnimator *animator;
@@ -30,12 +33,16 @@ static int NUMBER_OF_COLUMNS = 4;
 static int NUMBER_OF_ROWS = 3;
 
 - (IBAction)dealAgain:(UIButton *)sender{
+    [self removeKVOForGameTimers];
+    [self removeKVOForCards];
     NUMBER_OF_COLUMNS = 4;
     NUMBER_OF_ROWS = 3;
     self.cardContainerView.bounds = originalCardContainerBounds;
     [self setUpContainerViewHeight];
     [self setUpMyGrid];
     self.game = [self createGame];
+    [self addKVOForGameTimers];
+    [self addKVOForCards];
     [self removeAllCardSubViews];
     [self initializeAndAddCardViews];
     [self addTapGestureRecognizerToCards];
@@ -102,7 +109,6 @@ static int NUMBER_OF_ROWS = 3;
 }
 
 -(void)tapCard:(UITapGestureRecognizer *)sender{
-    NSLog(@"Card Tapped");
         
     NSUInteger chosenCardIndex = [self.cardViews indexOfObject:sender.view];
     NSLog(@"In tapCard: %lu", chosenCardIndex);
@@ -154,21 +160,23 @@ static int NUMBER_OF_ROWS = 3;
 }
 
 -(void)updateUI{
+//    NSLog(@"UpdateUI Called");
     NSMutableArray *addedCards = [[NSMutableArray alloc] initWithCapacity:3];
     for(UIView *cardView in self.cardViews){
         NSUInteger cardIndex = [self.cardViews indexOfObject:cardView];
         Card *card = [self.game cardAtIndex:cardIndex];
         if([card isKindOfClass:[PlayingCard class]]){
+//            NSLog(@"UpdateUI Called and card is playing card");
             if([cardView isKindOfClass:[PlayingCardView class]]){
                 PlayingCardView *playingCardView = (PlayingCardView *)cardView;
                 PlayingCard *playingCard = (PlayingCard *)card;
-                NSLog(@"Is this chosen: %@", card.isChosen ? @"YES":@"NO");
+//                NSLog(@"Is this chosen: %@", card.isChosen ? @"YES":@"NO");
                 playingCardView.rank = playingCard.rank;
                 playingCardView.suit = playingCard.suit;
                 playingCardView.isMatched = playingCard.isMatched;
                 if(card.isChosen != playingCardView.faceUP){
                     [UIView transitionWithView:playingCardView
-                                  duration:0.6
+                                  duration:0.4
                                    options:UIViewAnimationOptionTransitionFlipFromLeft
                                     animations:nil
                                 completion:nil];
@@ -213,9 +221,16 @@ static int NUMBER_OF_ROWS = 3;
         }
     }
     [self.cardViews addObjectsFromArray:addedCards];
-    NSLog(@"Number of cards in outlet: %lu", [self.cardViews count]);
-    NSLog(@"Number of cards in added cards: %lu", [addedCards count]);
+//    NSLog(@"Number of cards in outlet: %lu", [self.cardViews count]);
+//    NSLog(@"Number of cards in added cards: %lu", [addedCards count]);
     self.scoreLabel.text = [NSString stringWithFormat:@"Score: %li", self.game.score];
+    
+    [self updateTimeLabels];
+}
+
+-(void)updateTimeLabels{
+    self.totalTimeLabel.text = [NSString stringWithFormat:@"Total: %li", self.game.totalTime];
+    self.subTimeLabel.text = [NSString stringWithFormat:@"Sub: %li", self.game.subTime];
 }
 
 -(void)animateCardsToOriginalLocations{
@@ -238,6 +253,26 @@ static int NUMBER_OF_ROWS = 3;
 //    }
 }
 
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
+    if([keyPath isEqualToString:@"subTime"]){
+        [self updateTimeLabels];
+    }
+    
+    if([keyPath isEqualToString:@"cards.@count"]){
+        NSLog(@"In cards change kvo");
+        NUMBER_OF_COLUMNS = 4;
+        NUMBER_OF_ROWS = 3;
+        self.cardContainerView.bounds = originalCardContainerBounds;
+        [self setUpContainerViewHeight];
+        [self setUpMyGrid];
+        [self removeAllCardSubViews];
+        [self initializeAndAddCardViews];
+        [self addTapGestureRecognizerToCards];
+        [self updateUI];
+    }
+    
+}
+
 //--Getters and Setters--
 #pragma mark - Getters and Setters
 
@@ -253,11 +288,18 @@ static int NUMBER_OF_ROWS = 3;
     return _myGridForCards;
 }
 
+@synthesize game = _game;
+
 -(CardMatchingGame *)game{
     if(!_game)
         _game = [self createGame];
     _game.threeCardGame = NO;
     return _game;
+}
+
+#warning Consider removing method
+-(void)setGame:(CardMatchingGame *)game{
+    _game = game;
 }
 
 -(NSMutableArray *)cardViews{
@@ -306,6 +348,37 @@ static int NUMBER_OF_ROWS = 3;
 -(CardMatchingGame *)createGame{
     NSLog(@"Card count when creating game: %li", self.cardViews.count);
     return [[CardMatchingGame alloc] initWithCardCount:[self.cardViews count] usingDeck:[self createDeck]];
+}
+
+-(void)addObserverForCards{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateUI)
+                                                 name:@"reset"
+                                               object:nil];
+}
+
+-(void)addKVOForCards{
+    [self.game addObserver:self
+                forKeyPath:@"cards.@count"
+                   options:NSKeyValueObservingOptionNew
+                   context:nil];
+}
+
+-(void)removeKVOForCards{
+    [self.game removeObserver:self
+                   forKeyPath:@"cards.@count"];
+}
+
+-(void)addKVOForGameTimers{
+    [self.game addObserver:self
+                forKeyPath:@"subTime"
+                   options:NSKeyValueObservingOptionNew
+                   context:nil];
+}
+
+-(void)removeKVOForGameTimers{
+    [self.game removeObserver:self
+                   forKeyPath:@"subTime"];
 }
 
 -(void)addTapGestureRecognizerToCards{
@@ -358,6 +431,9 @@ static int NUMBER_OF_ROWS = 3;
     [self addPinchRecognizerToCardContainer];
     [self addPanRecognizerToRootView];
     [self addTapRecognizerToRootView];
+    [self addKVOForGameTimers];
+    [self addKVOForCards];
+    [self addObserverForCards];
     [self updateUI];
     NSLog(@"Card outlet count: %lu", (unsigned long)[self.cardViews count]);
 }
