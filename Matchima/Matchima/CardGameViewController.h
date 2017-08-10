@@ -13,7 +13,7 @@
 #import "SetCard.h"
 #import "Grid.h"
 #import "MyGrid.h"
-#import "playingCardView.h"
+#import "PlayingCardView.h"
 #import "SetCardView.h"
 
 @interface CardGameViewController : UIViewController
