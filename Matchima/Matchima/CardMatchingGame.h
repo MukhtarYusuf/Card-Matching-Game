@@ -21,7 +21,14 @@
 -(Card *)drawOneCardIntoGame;
 -(NSMutableArray *)drawThreeCardsIntoGame;
 
+@property (nonatomic) NSUInteger cardCount;
+@property (nonatomic) NSUInteger totalTime;
+@property (nonatomic) NSUInteger subTime;
 @property (nonatomic, readonly) NSInteger score;
 @property (nonatomic) BOOL threeCardGame;
+@property (strong, nonatomic) NSTimer *timer;
+
+#warning This should be private
+@property (strong, nonatomic, readonly) NSMutableArray *cards;//of Card
 @end
 
