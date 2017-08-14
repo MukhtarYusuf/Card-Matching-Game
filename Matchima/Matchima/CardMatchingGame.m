@@ -11,8 +11,10 @@
 
 @interface CardMatchingGame()
 @property (nonatomic, readwrite) NSInteger score;
-@property (strong, nonatomic) NSMutableArray *cards;//of Card
+@property (strong, nonatomic, readwrite) NSMutableArray *cards;//of Card
 @property (strong, nonatomic) Deck *deck;
+@property (strong, nonatomic) Deck *permanentDeck;
+
 @end
 
 @implementation CardMatchingGame
@@ -20,6 +22,10 @@
 static const int MISMATCH_PENALTY = 2;
 static const int MATCH_BONUS = 4;
 static const int COST_TO_CHOOSE = 1;
+static const int START_TOTAL_TIME = 60;
+
+static const int SUB_TIME = 20;
+static const int MATCH_TIME_BONUS = 8;
 
 NSMutableArray *chosenCards;
 
@@ -28,24 +34,23 @@ NSMutableArray *chosenCards;
     return _cards;
 }
 
+//Bla Bla
+
 //Designated Initializer
 - (instancetype)initWithCardCount:(NSUInteger)count usingDeck:(Deck *)deck{
     self = [super init];
-    
+    BOOL isGameValid = NO;
     if(self){
-        self.deck = deck;
-        for(int i = 0; i < count; i++){
-            Card *randomCard = [deck drawRandomCard];
-            if(randomCard){
-                [self.cards addObject:randomCard];
-            }
-            else{
-                self = nil;
-                break;
-            }
-        }
+        self.permanentDeck = deck;
+        self.cardCount = count;
+        isGameValid = [self populateGameWithCount:count];
+        self.totalTime = START_TOTAL_TIME;
+        self.subTime = SUB_TIME;
     }
-    return self;
+    if(isGameValid)
+        return self;
+    else
+        return nil;
 }
 
 //Return card at index
@@ -74,7 +79,16 @@ NSMutableArray *chosenCards;
 
 //Select card at index and perform operations
 - (void)chooseCardAtIndex:(NSUInteger)index{
-//    NSLog(@"In chooseCardAtIndex: %lu", index);
+    NSLog(@"In chooseCardAtIndex: %lu", index);
+    if(!self.timer){
+        self.timer = [NSTimer timerWithTimeInterval:1.0f
+                                             target:self
+                                           selector:@selector(updateTime)
+                                           userInfo:nil
+                                            repeats:YES];
+        [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
+    }
+    
     if(!chosenCards){
         chosenCards = [[NSMutableArray alloc] init];
     }
@@ -126,9 +140,12 @@ NSMutableArray *chosenCards;
     }
 }
 
-//Update score and card status for match
+#pragma mark Helper Methods
+
+//Update score for match
 -(void)updateGameForMatch:(Card *)chosenCard forScore:(int)score{
     self.score += score * MATCH_BONUS;
+    self.totalTime += MATCH_TIME_BONUS;
     chosenCard.matched = YES;
     
     for(Card *otherCard in chosenCards){
@@ -146,6 +163,52 @@ NSMutableArray *chosenCards;
         otherCard.chosen = NO;
     }
     [chosenCards removeAllObjects];
+}
+
+//Update Time
+-(void)updateTime{
+//    NSLog(@"In Update Time");
+    if(self.totalTime > 0){//Game Hasn't Ended
+        self.totalTime--;
+        if(self.subTime > 1)
+            self.subTime--;
+        else{
+            if(self.totalTime > SUB_TIME)
+                self.subTime = SUB_TIME;
+            else
+                self.subTime = self.totalTime;
+            [self populateGameWithCount:self.cardCount];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reset" object:nil];
+        }
+    }
+    else{//Game Has Ended
+        [self.timer invalidate];
+        //Update Flags Here or Something
+    }
+}
+
+-(BOOL)populateGameWithCount:(NSUInteger)count{
+    id someId = [self.permanentDeck copy];
+    if([someId isKindOfClass:[Deck class]])
+        self.deck = (Deck *)someId;
+    
+    if([self.cards count] != 0){
+        NSLog(@"Removing all card before repopulation");
+        [self.cards removeAllObjects];
+    }
+    
+    NSLog(@"Repopulating cards in model");
+    for(int i = 0; i < count; i++){
+        Card *randomCard = [self.deck drawRandomCard];
+        if(randomCard){
+            [self.cards insertObject:randomCard atIndex:[self.cards count]];
+        }
+        else{
+            return false;
+        }
+    }
+
+    return true;
 }
 
 @end
