@@ -51,4 +51,12 @@
     return [self.cards count];
 }
 
+-(id)copyWithZone:(NSZone *)zone{
+    Deck *deckCopy = [[Deck alloc] init];
+    
+    deckCopy.cards = [[NSMutableArray alloc] initWithArray:self.cards
+                                                   copyItems:YES];
+    
+    return deckCopy;
+}
 @end
