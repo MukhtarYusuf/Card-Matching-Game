@@ -84,4 +84,12 @@
     return calculatedScore;
 }
 
+-(id)copyWithZone:(NSZone *)zone{
+    PlayingCard *playingCardCopy = [[PlayingCard alloc] init];
+    playingCardCopy.rank = self.rank;
+    playingCardCopy.suit = [self.suit copyWithZone:zone];
+    
+    return playingCardCopy;
+}
+
 @end
