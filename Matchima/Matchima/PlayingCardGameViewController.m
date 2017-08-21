@@ -28,6 +28,7 @@ static int NUMBER_OF_ROWS = 5;
             CGRect initialFrame;
 //            initialFrame.origin = CGPointMake(initialXValue, 0.0);
             initialFrame.origin = CGPointMake(0.0, 0.0);
+            initialFrame.size = CGSizeMake(0.0, 0.0);
             PlayingCardView *pcv = [[PlayingCardView alloc] initWithFrame:initialFrame];
             [self.cardContainerView addSubview:pcv];
             [self.cardViews addObject:pcv];
