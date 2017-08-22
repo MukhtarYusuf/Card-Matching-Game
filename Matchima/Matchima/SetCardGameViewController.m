@@ -24,6 +24,7 @@
             CGRect finalFrame = [self.myGridForCards frameForCellInRow:i andColumn:j];
             CGRect initialFrame;
             initialFrame.origin = CGPointMake(initialXValue, 0.0);
+            initialFrame.size = CGSizeMake(0.0, 0.0);
             SetCardView *scv = [[SetCardView alloc] initWithFrame:initialFrame];
             [self.cardContainerView addSubview:scv];
             [self.cardViews addObject:scv];
