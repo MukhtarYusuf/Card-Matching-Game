@@ -258,6 +258,8 @@ static int NUMBER_OF_ROWS = 3;
         [self updateTimeLabels];
     }
     
+#warning Remove KVO for cards
+    
     if([keyPath isEqualToString:@"cards.@count"]){
         NSLog(@"In cards change kvo");
         NUMBER_OF_COLUMNS = 4;
@@ -270,8 +272,8 @@ static int NUMBER_OF_ROWS = 3;
         [self addTapGestureRecognizerToCards];
         [self updateUI];
     }
-    
 }
+
 
 //--Getters and Setters--
 #pragma mark - Getters and Setters
@@ -418,6 +420,71 @@ static int NUMBER_OF_ROWS = 3;
     }
 }
 
+//--Core Data Setup Code--
+-(void)createAndOpenManagedDocument{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *documentsDirectory = [[fileManager URLsForDirectory:NSDocumentDirectory
+                                                     inDomains:NSUserDomainMask] firstObject];
+    NSString *documentName = @"MatchimaDB";
+    NSURL *url = [documentsDirectory URLByAppendingPathComponent:documentName];
+    self.document = [[UIManagedDocument alloc] initWithFileURL:url];
+    
+    BOOL fileExists = [fileManager fileExistsAtPath:[url path]];
+    if(fileExists){
+        [self.document openWithCompletionHandler:^(BOOL success){
+            //Display contents of DB
+            [self displayDBContents];
+        }];
+    }else{
+        [self.document saveToURL:url
+                forSaveOperation:UIDocumentSaveForCreating
+               completionHandler:^(BOOL success) {
+                   //Populate Database for the first time
+                   [self insertDefaultValuesIntoDB];
+                   [self displayDBContents];
+               }];
+    }
+}
+
+-(void)insertDefaultValuesIntoDB{
+    NSArray *ranks = @[@1, @2, @3, @4, @5];
+    NSArray *names = @[@"Matchima_Master", @"Matchima_Pro", @"ProGamer", @"Dude", @"Legend"];
+    NSArray *scores = @[@100, @90, @80, @70, @60];
+    
+    for(int i = 0; i < [ranks count]; i++){
+        [HighScore insertHighScoreWithRank:[(NSNumber *)ranks[i] intValue]
+                                      name:names[i]
+                                     value:[(NSNumber *)scores[i] intValue]
+                                andContext:self.document.managedObjectContext];
+    }
+}
+
+-(void)displayDBContents{
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"HighScore"];
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"rank"
+                                                                     ascending:YES];
+    fetchRequest.sortDescriptors = @[sortDescriptor];
+    
+    NSArray *highScores = [[NSArray alloc] init];
+    
+    highScores = [self.document.managedObjectContext executeFetchRequest:fetchRequest
+                                                                       error:nil];
+    
+    for(HighScore *highScore in highScores){
+        NSLog(@"Rank: %i   Name: %@  Score: %i", highScore.rank, highScore.name, highScore.value);
+    }
+}
+
+//--Creation Method for Core Data--
+//+ (void)insertHighScoreWithRank:(int)rank name:(NSString *)name value:(int)value andContext:(nonnull NSManagedObjectContext *)context{
+//    HighScore *highScore = [NSEntityDescription insertNewObjectForEntityForName:@"HighScore" inManagedObjectContext:context];
+//    
+//    highScore.rank = rank;
+//    highScore.name = name;
+//    highScore.value = value;
+//}
+
+
 //--View Controller Life Cycle--
 #pragma mark - Lifecycle
 -(void)viewDidLoad{
@@ -435,6 +502,7 @@ static int NUMBER_OF_ROWS = 3;
     [self addKVOForCards];
     [self addObserverForCards];
     [self updateUI];
+    [self createAndOpenManagedDocument];
     NSLog(@"Card outlet count: %lu", (unsigned long)[self.cardViews count]);
 }
 
