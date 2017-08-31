@@ -22,9 +22,9 @@
 static const int MISMATCH_PENALTY = 2;
 static const int MATCH_BONUS = 4;
 static const int COST_TO_CHOOSE = 1;
-static const int START_TOTAL_TIME = 60;
 
-static const int SUB_TIME = 20;
+static const int START_TOTAL_TIME = 3;
+static const int SUB_TIME = 3;
 static const int MATCH_TIME_BONUS = 8;
 
 NSMutableArray *chosenCards;
