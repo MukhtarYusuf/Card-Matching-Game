@@ -8,12 +8,23 @@
 
 #import "PlayingCardGameViewController.h"
 #import "PlayingCardDeck.h"
+#import "HighScoresCDTVC.h"
 
 @interface  PlayingCardGameViewController()
 
 @end
 
 @implementation PlayingCardGameViewController
+
+//--Handle Segues--
+#pragma mark - Handle Segues
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    if([segue.identifier isEqualToString:@"Show HighScores"]){
+        HighScoresCDTVC *highScoresCDTVC = (HighScoresCDTVC *)segue.destinationViewController;
+        highScoresCDTVC.context = self.document.managedObjectContext;
+    }
+}
 
 static int NUMBER_OF_COLUMNS = 6;
 static int NUMBER_OF_ROWS = 5;
