@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		1401D4B71F4CBC94004BEA38 /* HighScoresCDTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 1401D4B61F4CBC94004BEA38 /* HighScoresCDTVC.m */; };
+		1401D4BA1F50D156004BEA38 /* HelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1401D4B91F50D156004BEA38 /* HelpViewController.m */; };
+		1401D4BF1F561FC0004BEA38 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1401D4BE1F561FC0004BEA38 /* SettingsViewController.m */; };
+		1401D4C21F58AE31004BEA38 /* RoundedModalContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1401D4C11F58AE31004BEA38 /* RoundedModalContentView.m */; };
 		1408F3B71F45101400D2F385 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1408F3B51F45101400D2F385 /* Model.xcdatamodeld */; };
 		1408F3C61F46588700D2F385 /* HighScore+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 1408F3C41F46588700D2F385 /* HighScore+CoreDataProperties.m */; };
 		141AD4421E3EC99900A7D691 /* CardMatchingGame.m in Sources */ = {isa = PBXBuildFile; fileRef = 141AD4411E3EC99900A7D691 /* CardMatchingGame.m */; };
@@ -56,6 +59,13 @@
 		1401D4B41F48013D004BEA38 /* HighScore+CoreDataClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "HighScore+CoreDataClass.m"; sourceTree = "<group>"; };
 		1401D4B61F4CBC94004BEA38 /* HighScoresCDTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HighScoresCDTVC.m; sourceTree = "<group>"; };
 		1401D4B81F4CBCAA004BEA38 /* HighScoresCDTVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HighScoresCDTVC.h; sourceTree = "<group>"; };
+		1401D4B91F50D156004BEA38 /* HelpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HelpViewController.m; sourceTree = "<group>"; };
+		1401D4BB1F50D16D004BEA38 /* HelpViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HelpViewController.h; sourceTree = "<group>"; };
+		1401D4BC1F50D7B3004BEA38 /* HighScoreConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HighScoreConstants.h; sourceTree = "<group>"; };
+		1401D4BD1F561F6F004BEA38 /* SettingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		1401D4BE1F561FC0004BEA38 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		1401D4C01F58ADD3004BEA38 /* RoundedModalContentView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RoundedModalContentView.h; sourceTree = "<group>"; };
+		1401D4C11F58AE31004BEA38 /* RoundedModalContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoundedModalContentView.m; sourceTree = "<group>"; };
 		1408F3B61F45101400D2F385 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		1408F3C31F46588700D2F385 /* HighScore+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "HighScore+CoreDataProperties.h"; sourceTree = "<group>"; };
 		1408F3C41F46588700D2F385 /* HighScore+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "HighScore+CoreDataProperties.m"; sourceTree = "<group>"; };
@@ -103,6 +113,8 @@
 		142087F91E3D3A2A00709751 /* Grid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Grid.m; sourceTree = "<group>"; };
 		142087FB1E3D6C7B00709751 /* MyGrid.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyGrid.h; sourceTree = "<group>"; };
 		142087FC1E3D6CC200709751 /* MyGrid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyGrid.m; sourceTree = "<group>"; };
+		14459CB31F7D7CEC00907E28 /* DefaultsKeysAndValues.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DefaultsKeysAndValues.h; sourceTree = "<group>"; };
+		14459CB41F7DA1F100907E28 /* NotificationNames.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationNames.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +157,8 @@
 		1408F3C71F465DE700D2F385 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				1401D4C01F58ADD3004BEA38 /* RoundedModalContentView.h */,
+				1401D4C11F58AE31004BEA38 /* RoundedModalContentView.m */,
 				141B9DDB1E242C1F008005F8 /* PlayingCardView.h */,
 				141B9DD91E242B8A008005F8 /* PlayingCardView.m */,
 				141B9DE91E2DD312008005F8 /* SetCardView.h */,
@@ -177,11 +191,14 @@
 		141B9DA11E242A4B008005F8 /* Matchima */ = {
 			isa = PBXGroup;
 			children = (
+				14459CB21F7D7C8800907E28 /* Header Files */,
 				1408F3B41F450FC900D2F385 /* Core Data */,
 				141B9DDC1E244639008005F8 /* Model */,
 				1408F3C71F465DE700D2F385 /* Views */,
 				141B9DA81E242A4B008005F8 /* ViewController.h */,
 				141B9DA91E242A4B008005F8 /* ViewController.m */,
+				1401D4BB1F50D16D004BEA38 /* HelpViewController.h */,
+				1401D4B91F50D156004BEA38 /* HelpViewController.m */,
 				142087EF1E3D369000709751 /* CardGameViewController.h */,
 				142087F01E3D373900709751 /* CardGameViewController.m */,
 				142087F21E3D37E600709751 /* PlayingCardGameViewController.h */,
@@ -190,6 +207,8 @@
 				142087F61E3D38FA00709751 /* SetCardGameViewController.m */,
 				1401D4B81F4CBCAA004BEA38 /* HighScoresCDTVC.h */,
 				1401D4B61F4CBC94004BEA38 /* HighScoresCDTVC.m */,
+				1401D4BD1F561F6F004BEA38 /* SettingsViewController.h */,
+				1401D4BE1F561FC0004BEA38 /* SettingsViewController.m */,
 				142087F81E3D3A1300709751 /* Grid.h */,
 				142087F91E3D3A2A00709751 /* Grid.m */,
 				142087FB1E3D6C7B00709751 /* MyGrid.h */,
@@ -250,6 +269,16 @@
 				141AD4411E3EC99900A7D691 /* CardMatchingGame.m */,
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		14459CB21F7D7C8800907E28 /* Header Files */ = {
+			isa = PBXGroup;
+			children = (
+				1401D4BC1F50D7B3004BEA38 /* HighScoreConstants.h */,
+				14459CB31F7D7CEC00907E28 /* DefaultsKeysAndValues.h */,
+				14459CB41F7DA1F100907E28 /* NotificationNames.h */,
+			);
+			name = "Header Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -391,6 +420,7 @@
 				142087F71E3D38FA00709751 /* SetCardGameViewController.m in Sources */,
 				141B9DE51E2446BA008005F8 /* Card.m in Sources */,
 				141B9DE81E2446BA008005F8 /* PlayingCardDeck.m in Sources */,
+				1401D4BA1F50D156004BEA38 /* HelpViewController.m in Sources */,
 				142087F41E3D384900709751 /* PlayingCardGameViewController.m in Sources */,
 				1408F3B71F45101400D2F385 /* Model.xcdatamodeld in Sources */,
 				141B9DF11E2ECC1B008005F8 /* SetCardDeck.m in Sources */,
@@ -405,8 +435,10 @@
 				141B9DA71E242A4B008005F8 /* AppDelegate.m in Sources */,
 				141B9DE61E2446BA008005F8 /* Deck.m in Sources */,
 				142087F11E3D373900709751 /* CardGameViewController.m in Sources */,
+				1401D4BF1F561FC0004BEA38 /* SettingsViewController.m in Sources */,
 				141B9DA41E242A4B008005F8 /* main.m in Sources */,
 				142087FD1E3D6CC200709751 /* MyGrid.m in Sources */,
+				1401D4C21F58AE31004BEA38 /* RoundedModalContentView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

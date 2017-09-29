@@ -7,16 +7,76 @@
 //
 
 #import "AppDelegate.h"
+#import "DefaultsKeysAndValues.h"
 
 @interface AppDelegate ()
-
+@property (nonatomic, strong) NSUserDefaults *userDefaults;
+@property (nonatomic, strong) NSDictionary *settings;
+@property (nonatomic, strong) NSDictionary *menuColor;
 @end
 
 @implementation AppDelegate
 
+- (NSUserDefaults *)userDefaults{
+    if(!_userDefaults)
+        _userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    return _userDefaults;
+}
+
+- (NSDictionary *)settings{
+    if([self.userDefaults objectForKey:WOOD_THEME]){
+        _settings = @{
+                        HAS_BACKGROUND_IMAGE : @YES,
+                        BACKGROUND_IMAGE : WOOD_BACKGROUND,
+                        CARDBACK_IMAGE : CARDBACK,
+                        MENU_COLOR : self.menuColor
+                      };
+    }else if([self.userDefaults objectForKey:DARK_THEME]){
+        _settings = @{
+                        HAS_BACKGROUND_IMAGE : @YES,
+                        BACKGROUND_IMAGE : DARK_BACKGROUND,
+                        CARDBACK_IMAGE : CARDBACK_DARK,
+                        MENU_COLOR : self.menuColor
+                      };
+    }
+    else if([self.userDefaults objectForKey:CLASSIC_THEME]){
+        _settings = @{
+                        HAS_BACKGROUND_IMAGE : @NO,
+                        BACKGROUND_IMAGE : NO_BACKGROUND,
+                        CARDBACK_IMAGE : CARDBACK,
+                        MENU_COLOR : self.menuColor
+                      };
+    }
+    
+    return _settings;
+}
+
+#warning Consider adding number values to header file
+- (NSDictionary *)menuColor{
+    _menuColor = @{
+                    RED : @118,
+                    GREEN : @67,
+                    BLUE : @0,
+                    ALPHA : @0.35
+                   };
+    
+    return _menuColor;
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    if(![self.userDefaults objectForKey:APP_LAUNCHED_ONCE]){//App is launching for the first time
+        [self.userDefaults setBool:YES forKey:APP_LAUNCHED_ONCE];
+        [self.userDefaults setBool:YES forKey:WOOD_THEME];
+        [self.userDefaults setBool:NO forKey:DARK_THEME];
+        [self.userDefaults setBool:NO forKey:CLASSIC_THEME];
+        [self.userDefaults synchronize];
+        [self.userDefaults setObject:self.settings forKey:SETTINGS];
+        [self.userDefaults synchronize];
+    }
+    
     return YES;
 }
 
@@ -46,6 +106,5 @@
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
-
 
 @end
