@@ -12,6 +12,11 @@
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
 @property (weak, nonatomic) IBOutlet UILabel *totalTimeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *subTimeLabel;
+@property (weak, nonatomic) IBOutlet UIButton *pauseButton;
+@property (weak, nonatomic) IBOutlet UILabel *pausedLabel;
+
+@property (weak, nonatomic) IBOutlet UIImageView *backgroundImage;
+@property (weak, nonatomic) IBOutlet UIView *menu;
 
 
 @property (strong, nonatomic) CardMatchingGame *game;
@@ -33,20 +38,25 @@ static int NUMBER_OF_COLUMNS = 4;
 static int NUMBER_OF_ROWS = 3;
 
 - (IBAction)dealAgain:(UIButton *)sender{
-    [self removeKVOForGameTimers];
-    [self removeKVOForCards];
-    NUMBER_OF_COLUMNS = 4;
-    NUMBER_OF_ROWS = 3;
-    self.cardContainerView.bounds = originalCardContainerBounds;
-    [self setUpContainerViewHeight];
-    [self setUpMyGrid];
-    self.game = [self createGame];
-    [self addKVOForGameTimers];
-    [self addKVOForCards];
-    [self removeAllCardSubViews];
-    [self initializeAndAddCardViews];
-    [self addTapGestureRecognizerToCards];
-    [self updateUI];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Deal Again?"
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertAction *dealAction = [UIAlertAction actionWithTitle:@"Deal Again"
+                                                         style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * _Nonnull action) {
+                                                           [self dealAgainConfirm];
+                                                       }];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel"
+                                                           style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * _Nonnull action) {
+                                                             //Do Nothing
+                                                         }];
+    [alert addAction:dealAction];
+    [alert addAction:cancelAction];
+    
+    [self presentViewController:alert
+                       animated:YES
+                     completion:nil];
 }
 
 - (IBAction)drawThreeCards:(id)sender{
@@ -444,6 +454,7 @@ static int NUMBER_OF_ROWS = 3;
 }
 
 //--Core Data Setup Code--
+#pragma mark Core Data Setup Code
 -(void)createAndOpenManagedDocument{
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *documentsDirectory = [[fileManager URLsForDirectory:NSDocumentDirectory
@@ -509,7 +520,7 @@ static int NUMBER_OF_ROWS = 3;
 
 
 //--View Controller Life Cycle--
-#pragma mark - Lifecycle
+#pragma mark - View Controller Lifecycle
 -(void)viewDidLoad{
     [super viewDidLoad];
     originalCardContainerBounds = self.cardContainerView.bounds;
