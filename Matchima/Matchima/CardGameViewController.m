@@ -480,6 +480,84 @@ static int NUMBER_OF_ROWS = 3;
     }
 }
 
+//--Helper Methods--
+#pragma mark Helper Methods
+
+- (void)settingsUpdated{
+    self.userDefaults = [NSUserDefaults standardUserDefaults];
+    self.settings = [self.userDefaults objectForKey:SETTINGS];
+    NSLog(@"In settings updated %@", self.settings);
+    [self setUpBackgroundImage];
+    [self setUpMenuColor];
+    [self setCardBackImages];
+}
+
+//Implemented in subclass
+- (void)setCardBackImages{
+}
+
+#warning Consider setup method for dealAgainConfirm and viewDidLoad
+-(void)dealAgainConfirm{
+    self.pausedLabel.hidden = YES;
+    self.cardContainerView.hidden = NO;
+    self.pauseButton.enabled = NO;
+    self.isGamePaused = NO;
+    [self removeKVOForGameTimers];
+    [self removeKVOForCards];
+    NUMBER_OF_COLUMNS = 4;
+    NUMBER_OF_ROWS = 3;
+    self.cardContainerView.bounds = originalCardContainerBounds;
+    [self setUpContainerViewHeight];
+    [self setUpMyGrid];
+    self.game = [self createGame];
+    [self addKVOForGameTimers];
+    [self addKVOForCards];
+    [self removeAllCardSubViews];
+    [self initializeAndAddCardViews];
+    [self addTapGestureRecognizerToCards];
+    [self updateUI];
+}
+
+-(void)pauseGame{
+    if(self.pauseButton.isEnabled){//Only Pause if the game's started
+        if(!self.isGamePaused){
+            [self.game.timer invalidate];
+            
+            self.cardContainerView.hidden = YES;
+            self.pausedLabel.hidden = NO;
+            self.isGamePaused = YES;
+        }
+    }
+    
+//    UIAlertController *pauseAlert = [UIAlertController alertControllerWithTitle:@"Game Paused"
+//                                                                        message:nil preferredStyle:UIAlertControllerStyleAlert];
+//    
+//    UIAlertAction *unPauseAction = [UIAlertAction actionWithTitle:@"Resume"
+//                                                            style:UIAlertActionStyleCancel
+//                                                          handler:^(UIAlertAction * _Nonnull action) {
+//                                                              [self resumeGame];
+//                                                          }];
+//    [pauseAlert addAction:unPauseAction];
+//    [self presentViewController:pauseAlert
+//                       animated:YES
+//                     completion:nil];
+}
+
+-(void)resumeGame{
+    if(self.isGamePaused){
+        self.cardContainerView.hidden = NO;
+        self.pausedLabel.hidden = YES;
+        self.game.timer = [NSTimer timerWithTimeInterval:1.0f
+                                             target:self.game
+                                           selector:@selector(updateTime)
+                                           userInfo:nil
+                                            repeats:YES];
+        
+        [[NSRunLoop currentRunLoop] addTimer:self.game.timer forMode:NSRunLoopCommonModes];;
+        self.isGamePaused = NO;
+    }
+}
+
 -(void)insertDefaultValuesIntoDB{
     NSArray *ranks = @[@1, @2, @3, @4, @5];
     NSArray *names = @[@"Matchima_Master", @"Matchima_Pro", @"ProGamer", @"Dude", @"Legend"];
