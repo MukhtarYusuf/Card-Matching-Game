@@ -37,6 +37,13 @@ static const double CARD_ASPECT_RATIO = 0.5;
 static int NUMBER_OF_COLUMNS = 4;
 static int NUMBER_OF_ROWS = 3;
 
+- (IBAction)pause:(id)sender {
+    if(self.isGamePaused)
+        [self resumeGame];
+    else
+        [self pauseGame];
+}
+
 - (IBAction)dealAgain:(UIButton *)sender{
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Deal Again?"
                                                                    message:nil
