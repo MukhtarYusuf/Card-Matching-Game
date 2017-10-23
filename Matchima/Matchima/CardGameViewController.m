@@ -126,7 +126,8 @@ static int NUMBER_OF_ROWS = 3;
 }
 
 -(void)tapCard:(UITapGestureRecognizer *)sender{
-        
+    
+    self.pauseButton.enabled = YES;
     NSUInteger chosenCardIndex = [self.cardViews indexOfObject:sender.view];
     NSLog(@"In tapCard: %lu", chosenCardIndex);
 //    Card *card = [self.game cardAtIndex:chosenCardIndex];
@@ -246,8 +247,8 @@ static int NUMBER_OF_ROWS = 3;
 }
 
 -(void)updateTimeLabels{
-    self.totalTimeLabel.text = [NSString stringWithFormat:@"Total: %li", self.game.totalTime];
-    self.subTimeLabel.text = [NSString stringWithFormat:@"Sub: %li", self.game.subTime];
+    self.totalTimeLabel.text = [NSString stringWithFormat:@"Time Left: %li", self.game.totalTime];
+    self.subTimeLabel.text = [NSString stringWithFormat:@"Reset Time: %li", self.game.subTime];
 }
 
 -(void)animateCardsToOriginalLocations{
