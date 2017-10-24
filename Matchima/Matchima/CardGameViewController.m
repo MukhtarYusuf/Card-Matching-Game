@@ -258,17 +258,6 @@ static int NUMBER_OF_ROWS = 3;
                             ((UIView *)self.cardViews[i]).frame = ((NSValue *)self.cardViewFrames[i]).CGRectValue;
                          }];
     }
-//    int cardIndex = 0;
-//    for(int i = 0; i < self.myGridForCards.numOfRows; i++){
-//        for(int j = 0; j < self.myGridForCards.numOfColumns; j++){
-//            UIView *cardView = self.cardViews[cardIndex];
-//            [UIView animateWithDuration:0.3
-//                             animations:^{
-//                                 cardView.frame = [self.myGridForCards frameForCellInRow:i andColumn:j];
-//                             }];
-//            cardIndex++; //Check
-//        }
-//    }
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
