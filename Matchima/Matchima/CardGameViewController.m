@@ -263,28 +263,8 @@ static int NUMBER_OF_ROWS = 3;
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
     if([keyPath isEqualToString:@"subTime"]){
         [self updateTimeLabels];
-        if(self.game.totalTime == 0){
-            //Game has ended
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Game Over"
-                                                                                     message:@"The Game Has Ended"
-                                                                              preferredStyle:UIAlertControllerStyleAlert];
-
-            [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-                textField.text = @"Me";
-            }];
-            
-            UIAlertAction *dismissAction = [UIAlertAction
-                                             actionWithTitle:@"OK"
-                                             style:UIAlertActionStyleDefault
-                                             handler:^(UIAlertAction * _Nonnull action) {
-                                                 [self dealAgain:nil];
-                                             }
-                                    ];
-            [alertController addAction:dismissAction];
-            
-            [self presentViewController:alertController
-                               animated:YES
-                             completion:nil];
+        if(self.game.totalTime == 0){//Game has ended
+            [self processEndOfGame];
         }
     }
     
