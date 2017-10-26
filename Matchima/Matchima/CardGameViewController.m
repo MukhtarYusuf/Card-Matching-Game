@@ -287,6 +287,19 @@ static int NUMBER_OF_ROWS = 3;
 
 //--Getters and Setters--
 #pragma mark - Getters and Setters
+- (NSUserDefaults *)userDefaults{
+    if(!_userDefaults)
+        _userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    return _userDefaults;
+}
+
+- (NSDictionary *)settings{
+    if(!_settings)
+        _settings = [self.userDefaults objectForKey:SETTINGS];
+    
+    return _settings;
+}
 
 -(Grid *)gridForCards{
     if(!_gridForCards)
