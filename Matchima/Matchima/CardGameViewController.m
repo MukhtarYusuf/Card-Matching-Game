@@ -349,6 +349,30 @@ static int NUMBER_OF_ROWS = 3;
 //--Setup Code--
 #pragma mark - Setup
 
+- (void)setUpBackgroundImage{
+    if([self.settings objectForKey:HAS_BACKGROUND_IMAGE]){
+        self.backgroundImage.hidden = NO;
+        [self.backgroundImage setImage:[UIImage imageNamed:[self.settings objectForKey:BACKGROUND_IMAGE]]];
+    }else{
+        self.backgroundImage.hidden = YES;
+    }
+}
+
+- (void)setUpMenuColor{
+    NSDictionary *menuColor = [self.settings objectForKey:MENU_COLOR];
+    
+    float red = [[menuColor objectForKey:RED] floatValue] / 255;
+    float green = [[menuColor objectForKey:GREEN] floatValue] / 255;
+    float blue = [[menuColor objectForKey:BLUE] floatValue] / 255;
+    double alpha = [[menuColor objectForKey:ALPHA] doubleValue];
+    
+    self.menu.backgroundColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
+}
+
+-(void)hideNavBar{
+    [self.navigationController setNavigationBarHidden:YES];
+}
+
 -(void)setUpMyGrid{
     self.myGridForCards.size = self.cardContainerView.bounds.size;
     self.myGridForCards.numOfColumns = NUMBER_OF_COLUMNS;
