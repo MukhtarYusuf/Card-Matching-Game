@@ -399,6 +399,21 @@ static int NUMBER_OF_ROWS = 3;
     return [[CardMatchingGame alloc] initWithCardCount:[self.cardViews count] usingDeck:[self createDeck]];
 }
 
+-(void)addWillEnterBackgroundNotification{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(pauseGame)
+                                                 name:UIApplicationDidEnterBackgroundNotification
+                                               object:nil
+     ];
+}
+
+- (void)addSettingsChangedNotification{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(settingsUpdated)
+                                                 name:SETTINGS_CHANGED_NOTIFICATION
+                                               object:nil];
+}
+
 -(void)addObserverForCards{
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateUI)
