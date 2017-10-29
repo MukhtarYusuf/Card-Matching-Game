@@ -588,9 +588,9 @@ static int NUMBER_OF_ROWS = 3;
 }
 
 -(void)insertDefaultValuesIntoDB{
-    NSArray *ranks = @[@1, @2, @3, @4, @5];
-    NSArray *names = @[@"Matchima_Master", @"Matchima_Pro", @"ProGamer", @"Dude", @"Legend"];
-    NSArray *scores = @[@100, @90, @80, @70, @60];
+    NSArray *ranks = @[@1, @2, @3, @4, @5, @6, @7, @8, @9, @10];
+    NSArray *names = @[@"Matchima_Master", @"Matchima_Pro", @"ProGamer", @"Dude", @"Legend", @"Winner", @"Champion", @"Mr Incredible", @"The Destroyer", @"Stewie"];
+    NSArray *scores = @[@100, @90, @80, @70, @60, @50, @40, @30, @25, @20];
     
     for(int i = 0; i < [ranks count]; i++){
         [HighScore insertHighScoreWithRank:[(NSNumber *)ranks[i] intValue]
