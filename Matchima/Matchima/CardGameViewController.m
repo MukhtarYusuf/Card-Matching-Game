@@ -616,6 +616,103 @@ static int NUMBER_OF_ROWS = 3;
     }
 }
 
+-(void)processEndOfGame{
+#warning Check cast to int
+    BOOL isTopScore = NO;
+    BOOL isHighScore = NO;
+    int newScore = (int)self.game.score;
+    __block int newRank = 0;
+    __block NSString *newName = @"";
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"HighScore"];
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"rank"
+                                                                     ascending:YES];
+    NSString *predicateStringForHighScoresLessThanNew = @"(rank <= %i) AND (value < %i)";
+    NSString *predicateStringForAllHighScores = @"rank <= %i";
+    
+    NSPredicate *predicateForHighScoresLessThanNew = [NSPredicate predicateWithFormat:predicateStringForHighScoresLessThanNew, MAX_HIGHSCORES, newScore];
+    NSPredicate *predicateForAllHighScores = [NSPredicate predicateWithFormat:predicateStringForAllHighScores, MAX_HIGHSCORES];
+    
+    
+    fetchRequest.sortDescriptors = @[sortDescriptor];
+    fetchRequest.predicate = predicateForHighScoresLessThanNew;
+    
+    NSError *error;
+    NSArray *highScoresLessThanNewScore = [self.document.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    fetchRequest.predicate = predicateForAllHighScores;
+    NSArray *allHighScores = [self.document.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if([highScoresLessThanNewScore count] > 0)
+        isHighScore = YES;
+    
+    HighScore *topScore = [allHighScores firstObject];
+    if(newScore > topScore.value)
+        isTopScore = YES;
+    
+    NSString *alertTitle = @"";
+    if(isHighScore){
+        if(isTopScore)
+            alertTitle = @"Excellent! You Beat the Top Score!";
+        else
+            alertTitle = @"Congratulations! You Got a High Score";
+    }else
+        alertTitle = @"Game Over";
+    
+    NSString *alertMessage = [NSString stringWithFormat:@"\nTop Score: %i \nYour Score: %i", topScore.value, newScore];
+    
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                             message:alertMessage
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    
+    
+    UIAlertAction *dismissAction = [UIAlertAction
+                                    actionWithTitle:@"Cancel"
+                                    style:UIAlertActionStyleDefault
+                                    handler:^(UIAlertAction * _Nonnull action) {
+                                        [self dealAgainConfirm];
+                                    }
+                                    ];
+    UIAlertAction *saveAction = [UIAlertAction actionWithTitle:@"Save Score"
+                                                         style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * _Nonnull action) {
+                                                           if(highScoresLessThanNewScore){
+                                                               if(isHighScore){
+                                                                   HighScore *firstHighScore = (HighScore *)[highScoresLessThanNewScore firstObject];
+                                                                   newRank = firstHighScore.rank;
+                                                                   UITextField *alertTextField = [alertController.textFields firstObject];
+                                                                   newName = alertTextField.text;
+                                                                   
+                                                                   [HighScore insertHighScoreWithRank:newRank
+                                                                                                 name:newName
+                                                                                                value:newScore
+                                                                                           andContext:self.document.managedObjectContext];
+                                                                   for(HighScore *hs in highScoresLessThanNewScore){
+                                                                       hs.rank++;
+                                                                       
+                                                                       if(hs.rank > MAX_HIGHSCORES)//Only Keep Top 20 Scores
+                                                                           [self.document.managedObjectContext deleteObject:hs];
+                                                                   }
+                                                               }
+                                                           }else{
+                                                               NSLog(@"Error: %@", error);
+                                                           }
+                                                           [self dealAgainConfirm];
+                                                       }];
+    if(isHighScore){
+        [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+            textField.text = @"My High Score";
+        }];
+        [alertController addAction:saveAction];
+    }
+    [alertController addAction:dismissAction];
+    
+    [self presentViewController:alertController
+                       animated:YES
+                     completion:nil];
+
+}
+
 //--Creation Method for Core Data--
 //+ (void)insertHighScoreWithRank:(int)rank name:(NSString *)name value:(int)value andContext:(nonnull NSManagedObjectContext *)context{
 //    HighScore *highScore = [NSEntityDescription insertNewObjectForEntityForName:@"HighScore" inManagedObjectContext:context];
