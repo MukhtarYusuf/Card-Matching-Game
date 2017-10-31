@@ -727,7 +727,11 @@ static int NUMBER_OF_ROWS = 3;
 #pragma mark - View Controller Lifecycle
 -(void)viewDidLoad{
     [super viewDidLoad];
+    [self setUpBackgroundImage];
+    [self setUpMenuColor];
+    self.pauseButton.enabled = NO;
     originalCardContainerBounds = self.cardContainerView.bounds;
+    [self hideNavBar];
     [self setUpContainerViewHeight];
     [self setUpMyGrid];
 //    [self setUpGrid];
@@ -738,6 +742,8 @@ static int NUMBER_OF_ROWS = 3;
     [self addTapRecognizerToRootView];
     [self addKVOForGameTimers];
     [self addKVOForCards];
+    [self addSettingsChangedNotification];
+    [self addWillEnterBackgroundNotification];
     [self addObserverForCards];
     [self updateUI];
     [self createAndOpenManagedDocument];
