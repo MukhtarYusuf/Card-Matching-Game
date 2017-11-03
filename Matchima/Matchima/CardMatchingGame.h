@@ -20,6 +20,7 @@
 - (Card *)cardAtIndex:(NSUInteger)index;
 -(Card *)drawOneCardIntoGame;
 -(NSMutableArray *)drawThreeCardsIntoGame;
+-(void)updateTime;
 
 @property (nonatomic) NSUInteger cardCount;
 @property (nonatomic) NSUInteger totalTime;
@@ -28,7 +29,6 @@
 @property (nonatomic) BOOL threeCardGame;
 @property (strong, nonatomic) NSTimer *timer;
 
-#warning This should be private
 @property (strong, nonatomic, readonly) NSMutableArray *cards;//of Card
 @end
 
