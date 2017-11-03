@@ -750,4 +750,17 @@ static int NUMBER_OF_ROWS = 3;
     NSLog(@"Card outlet count: %lu", (unsigned long)[self.cardViews count]);
 }
 
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    self.title = @"Back";
+    
+    [self pauseGame];
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self hideNavBar];
+    self.title = @"Playing Card Game";
+}
+
 @end
