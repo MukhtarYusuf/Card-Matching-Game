@@ -103,7 +103,7 @@
         else if([self.shape isEqualToString:@"Squiggle"])
             [self drawAllSquiggles];
     }else{
-        [[UIImage imageNamed:@"cardback1"] drawInRect:self.bounds];
+        [[UIImage imageNamed:@"cardback3"] drawInRect:self.bounds];
     }
 }
 

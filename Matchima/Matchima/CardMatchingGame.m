@@ -19,13 +19,20 @@
 
 @implementation CardMatchingGame
 
-static const int MISMATCH_PENALTY = 2;
-static const int MATCH_BONUS = 4;
+/*
+ 
+ - If time is above certain amount, consider reducing the MATCH_TIME_BONUS
+ - The game gets too easy when a lot of time has been accumulated, and there's no more tension
+ 
+*/
+
+static const int MISMATCH_PENALTY = 1; //Was 2
+static const int MATCH_BONUS = 10; //Was 4
 static const int COST_TO_CHOOSE = 1;
 
-static const int START_TOTAL_TIME = 3;
-static const int SUB_TIME = 3;
-static const int MATCH_TIME_BONUS = 8;
+static const int START_TOTAL_TIME = 10;
+static const int SUB_TIME = 8;
+static int MATCH_TIME_BONUS = 4;
 
 NSMutableArray *chosenCards;
 
@@ -33,8 +40,6 @@ NSMutableArray *chosenCards;
     if(!_cards) _cards = [[NSMutableArray alloc] init];
     return _cards;
 }
-
-//Bla Bla
 
 //Designated Initializer
 - (instancetype)initWithCardCount:(NSUInteger)count usingDeck:(Deck *)deck{
@@ -144,6 +149,10 @@ NSMutableArray *chosenCards;
 
 //Update score for match
 -(void)updateGameForMatch:(Card *)chosenCard forScore:(int)score{
+    if(self.totalTime >= 25)
+        MATCH_TIME_BONUS = 2;
+    else
+        MATCH_TIME_BONUS = 5;
     self.score += score * MATCH_BONUS;
     self.totalTime += MATCH_TIME_BONUS;
     chosenCard.matched = YES;
@@ -155,7 +164,7 @@ NSMutableArray *chosenCards;
     [chosenCards removeAllObjects];
 }
 
-//Update score and cards status for mismatch
+//Update score for mismatch
 -(void)updateGameForMismatch:(Card *)chosenCard{
     self.score -= MISMATCH_PENALTY;
     

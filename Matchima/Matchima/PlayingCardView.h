@@ -14,5 +14,6 @@
 @property (strong, nonatomic) NSString *suit;
 @property (nonatomic) BOOL faceUP;
 @property (nonatomic) BOOL isMatched;
+@property (strong, nonatomic) NSString *cardBackImageName;
 
 @end

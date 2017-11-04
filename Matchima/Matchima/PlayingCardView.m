@@ -31,6 +31,11 @@
     [self setNeedsDisplay];
 }
 
+- (void)setCardBackImageName:(NSString *)cardBackImageName{
+    _cardBackImageName = cardBackImageName;
+    [self setNeedsDisplay];
+}
+
 - (void)setRank:(NSUInteger)rank{
     _rank = rank;
     [self setNeedsDisplay];
@@ -90,7 +95,7 @@
         [self drawCorners];
         [self drawCenter];
     }else{
-        [[UIImage imageNamed:@"cardback"] drawInRect:self.bounds];
+        [[UIImage imageNamed:self.cardBackImageName] drawInRect:self.bounds];
     }
     
     if(self.isMatched)

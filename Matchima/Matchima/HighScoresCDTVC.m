@@ -62,7 +62,7 @@
 -(void)setUpFetchedResultsController{
     NSLog(@"In set up fetched results controller");
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"HighScore"];
-    fetchRequest.fetchLimit = 50;
+    fetchRequest.fetchLimit = MAX_HIGHSCORES;
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"rank"
                                                                      ascending:YES];
     fetchRequest.sortDescriptors = @[sortDescriptor];
@@ -72,6 +72,10 @@
                                                                                    cacheName:nil];
 }
 
+-(void)showNavBar{
+    [self.navigationController setNavigationBarHidden:NO];
+}
+
 //--ViewController Life Cycle
 #pragma mark ViewController Life Cycle
 -(void)viewDidLoad{
@@ -79,6 +83,7 @@
     if(![self.fetchedResultsController performFetch:&error]){
         NSLog(@"An Error Occured: %@", error);
     }
+    [self showNavBar];
 }
 
 

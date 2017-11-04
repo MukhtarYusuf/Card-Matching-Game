@@ -20,8 +20,13 @@
 #pragma mark - Handle Segues
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    //Always pause game while segueing
+    if(!self.isGamePaused)
+        [self pauseGame];
+    
     if([segue.identifier isEqualToString:@"Show HighScores"]){
         HighScoresCDTVC *highScoresCDTVC = (HighScoresCDTVC *)segue.destinationViewController;
+        [highScoresCDTVC.navigationController setNavigationBarHidden:NO];
         highScoresCDTVC.context = self.document.managedObjectContext;
     }
 }
@@ -41,9 +46,10 @@ static int NUMBER_OF_ROWS = 5;
             initialFrame.origin = CGPointMake(0.0, 0.0);
             initialFrame.size = CGSizeMake(0.0, 0.0);
             PlayingCardView *pcv = [[PlayingCardView alloc] initWithFrame:initialFrame];
+            pcv.cardBackImageName = [self.settings objectForKey:CARDBACK_IMAGE];
             [self.cardContainerView addSubview:pcv];
             [self.cardViews addObject:pcv];
-            [UIView animateWithDuration:0.3
+            [UIView animateWithDuration:0.4
                              animations:^{
                                  pcv.frame = finalFrame;
                                  [self.cardViewFrames addObject:[NSValue valueWithCGRect:pcv.frame]];
@@ -66,6 +72,14 @@ static int NUMBER_OF_ROWS = 5;
 //        cardIndex++; //Check
 //    }
 //}
+
+- (void)setCardBackImages{
+    NSLog(@"Setting card back images");
+    for(PlayingCardView *pcv in self.cardViews){
+        NSLog(@"Setting one card back image");
+        pcv.cardBackImageName = [self.settings objectForKey:CARDBACK_IMAGE];
+    }
+}
 
 -(Deck *)createDeck{
     return [[PlayingCardDeck alloc] init];
