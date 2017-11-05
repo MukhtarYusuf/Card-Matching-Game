@@ -13,6 +13,7 @@
 @property (nonatomic, strong) NSUserDefaults *userDefaults;
 @property (nonatomic, strong) NSDictionary *settings;
 @property (nonatomic, strong) NSDictionary *menuColor;
+@property (nonatomic, strong) NSDictionary *saveButtonColor;
 @end
 
 @implementation AppDelegate
@@ -25,43 +26,74 @@
 }
 
 - (NSDictionary *)settings{
-    if([self.userDefaults objectForKey:WOOD_THEME]){
+    if([[self.userDefaults objectForKey:WOOD_THEME] boolValue]){
         _settings = @{
                         HAS_BACKGROUND_IMAGE : @YES,
                         BACKGROUND_IMAGE : WOOD_BACKGROUND,
                         CARDBACK_IMAGE : CARDBACK,
-                        MENU_COLOR : self.menuColor
+                        MENU_COLOR : self.menuColor,
+                        SAVE_BUTTON_COLOR : self.saveButtonColor
                       };
-    }else if([self.userDefaults objectForKey:DARK_THEME]){
+    }else if([[self.userDefaults objectForKey:DARK_THEME] boolValue]){
         _settings = @{
                         HAS_BACKGROUND_IMAGE : @YES,
                         BACKGROUND_IMAGE : DARK_BACKGROUND,
                         CARDBACK_IMAGE : CARDBACK_DARK,
-                        MENU_COLOR : self.menuColor
+                        MENU_COLOR : self.menuColor,
+                        SAVE_BUTTON_COLOR : self.saveButtonColor
                       };
     }
-    else if([self.userDefaults objectForKey:CLASSIC_THEME]){
+    else if([[self.userDefaults objectForKey:CLASSIC_THEME] boolValue]){
         _settings = @{
                         HAS_BACKGROUND_IMAGE : @NO,
                         BACKGROUND_IMAGE : NO_BACKGROUND,
                         CARDBACK_IMAGE : CARDBACK,
-                        MENU_COLOR : self.menuColor
+                        MENU_COLOR : self.menuColor,
+                        SAVE_BUTTON_COLOR : self.saveButtonColor
                       };
     }
     
     return _settings;
 }
 
-#warning Consider adding number values to header file
 - (NSDictionary *)menuColor{
-    _menuColor = @{
-                    RED : @118,
-                    GREEN : @67,
-                    BLUE : @0,
-                    ALPHA : @0.35
+    if([[self.userDefaults objectForKey:CLASSIC_THEME] boolValue]){//Menu color for classic theme
+        _menuColor = @{
+                       RED : [NSNumber numberWithInt:RED_CLASSIC_MENU_VALUE],
+                       GREEN : [NSNumber numberWithInt:GREEN_CLASSIC_MENU_VALUE],
+                       BLUE : [NSNumber numberWithInt:BLUE_CLASSIC_MENU_VALUE],
+                       ALPHA : [NSNumber numberWithDouble:ALPHA_CLASSIC_MENU_VALUE]
+                       };
+    }else{
+        _menuColor = @{
+                    RED : [NSNumber numberWithInt:RED_WOOD_MENU_VALUE],
+                    GREEN : [NSNumber numberWithInt:GREEN_WOOD_MENU_VALUE],
+                    BLUE : [NSNumber numberWithInt:BLUE_WOOD_MENU_VALUE],
+                    ALPHA : [NSNumber numberWithDouble:ALPHA_WOOD_MENU_VALUE]
                    };
+    }
     
     return _menuColor;
+}
+
+- (NSDictionary *)saveButtonColor{
+    if([[self.userDefaults objectForKey:CLASSIC_THEME] boolValue]){
+        _saveButtonColor = @{
+                             RED : [NSNumber numberWithInt:RED_CLASSIC_SAVE_BUTTON_VALUE],
+                             GREEN : [NSNumber numberWithInt:GREEN_CLASSIC_SAVE_BUTTON_VALUE],
+                             BLUE : [NSNumber numberWithInt:BLUE_CLASSIC_SAVE_BUTTON_VALAUE],
+                             ALPHA : [NSNumber numberWithDouble:ALPHA_CLASSIC_SAVE_BUTTON_VALUE]
+                             };
+    }else{
+        _saveButtonColor = @{
+                             RED : [NSNumber numberWithInt:RED_WOOD_SAVE_BUTTON_VALUE],
+                             GREEN : [NSNumber numberWithInt:GREEN_WOOD_SAVE_BUTTON_VALUE],
+                             BLUE : [NSNumber numberWithInt:BLUE_WOOD_SAVE_BUTTON_VALUE],
+                             ALPHA : [NSNumber numberWithDouble:ALPHA_WOOD_SAVE_BUTTON_VALUE]
+                             };
+    }
+    
+    return _saveButtonColor;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
