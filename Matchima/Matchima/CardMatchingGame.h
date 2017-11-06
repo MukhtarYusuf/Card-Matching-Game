@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Deck.h"
 #import "Card.h"
+#import "NotificationNames.h"
 
 @interface CardMatchingGame : NSObject
 
@@ -22,13 +23,22 @@
 -(NSMutableArray *)drawThreeCardsIntoGame;
 -(void)updateTime;
 
+@property (nonatomic) BOOL isGamePaused;
+@property (nonatomic) BOOL isGameActive;
+@property (nonatomic) BOOL hasGameEnded;
+@property (nonatomic) BOOL threeCardGame;
+@property (nonatomic) BOOL isMultiplierActive;
 @property (nonatomic) NSUInteger cardCount;
 @property (nonatomic) NSUInteger totalTime;
 @property (nonatomic) NSUInteger subTime;
-@property (nonatomic, readonly) NSInteger score;
-@property (nonatomic) BOOL threeCardGame;
-@property (strong, nonatomic) NSTimer *timer;
+@property (nonatomic) NSInteger score;
+@property (nonatomic) NSUInteger totalPlayTime;
+@property (nonatomic) NSUInteger multiplier;
 
-@property (strong, nonatomic, readonly) NSMutableArray *cards;//of Card
+@property (strong, nonatomic) NSMutableArray *cards;//of Card
+@property (strong, nonatomic) NSTimer *timer;
+@property (strong, nonatomic) NSDate *startGameDate; //Time when the game started
+@property (strong, nonatomic) NSDate *endGameDate; //Time when the game ended
+
 @end
 

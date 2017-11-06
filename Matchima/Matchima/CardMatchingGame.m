@@ -10,8 +10,6 @@
 #import "SetCard.h"
 
 @interface CardMatchingGame()
-@property (nonatomic, readwrite) NSInteger score;
-@property (strong, nonatomic, readwrite) NSMutableArray *cards;//of Card
 @property (strong, nonatomic) Deck *deck;
 @property (strong, nonatomic) Deck *permanentDeck;
 
@@ -19,26 +17,48 @@
 
 @implementation CardMatchingGame
 
-/*
- 
- - If time is above certain amount, consider reducing the MATCH_TIME_BONUS
- - The game gets too easy when a lot of time has been accumulated, and there's no more tension
- 
-*/
-
-static const int MISMATCH_PENALTY = 1; //Was 2
+static int MISMATCH_PENALTY = 1; //Was 2
 static const int MATCH_BONUS = 10; //Was 4
-static const int COST_TO_CHOOSE = 1;
+static int COST_TO_CHOOSE = 1;
+static const float MISMATCH_PEN_RATIO_DENOMINATOR = 100.0;
+static const float CTC_RATIO_DENOMINATOR = 100.0;
+static const int MAXIMUM_MISMATCH_PEN = 2;
+static const int MAXIMUM_CTC = 2;
 
 static const int START_TOTAL_TIME = 10;
-static const int SUB_TIME = 8;
+static const int SUB_TIME = 10;
 static int MATCH_TIME_BONUS = 4;
 
+static const int MULTIPLIER_PROBABILITY_DENOMINATOR = 3; // 1/3
+
 NSMutableArray *chosenCards;
+
+- (void)setIsMultiplierActive:(BOOL)isMultiplierActive{
+    if(isMultiplierActive == NO)
+        self.multiplier = 1;
+    
+    _isMultiplierActive = isMultiplierActive;
+}
 
 - (NSMutableArray *)cards{
     if(!_cards) _cards = [[NSMutableArray alloc] init];
     return _cards;
+}
+
+@synthesize multiplier = _multiplier;
+
+- (NSUInteger)multiplier{
+    if(_multiplier == 0)
+        _multiplier = 1;
+    
+    return _multiplier;
+}
+
+- (void)setmultiplier:(NSUInteger)multiplier{
+    if(multiplier == 0)
+        _multiplier = 1;
+    else
+        _multiplier = multiplier;
 }
 
 //Designated Initializer
@@ -84,7 +104,7 @@ NSMutableArray *chosenCards;
 
 //Select card at index and perform operations
 - (void)chooseCardAtIndex:(NSUInteger)index{
-    NSLog(@"In chooseCardAtIndex: %lu", index);
+    self.isGameActive = YES;
     if(!self.timer){
         self.timer = [NSTimer timerWithTimeInterval:1.0f
                                              target:self
@@ -92,6 +112,7 @@ NSMutableArray *chosenCards;
                                            userInfo:nil
                                             repeats:YES];
         [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
+        self.startGameDate = [NSDate date];
     }
     
     if(!chosenCards){
@@ -137,23 +158,34 @@ NSMutableArray *chosenCards;
                     [self updateGameForMismatch:card];
                 }
             }
-            if(card == nil)
-                NSLog(@"In card not matched else for update");
+//            if(card == nil)
+//                NSLog(@"In card not matched else for update");
+            if(self.score >= 200){
+                COST_TO_CHOOSE = floor(self.score/CTC_RATIO_DENOMINATOR);
+                if(COST_TO_CHOOSE > MAXIMUM_CTC)
+                    COST_TO_CHOOSE = MAXIMUM_CTC;
+            }
+            else
+                COST_TO_CHOOSE = 1;
             self.score -= COST_TO_CHOOSE;
             card.chosen = YES;
         }
     }
 }
 
+//--Helper Methods--
 #pragma mark Helper Methods
 
 //Update score for match
 -(void)updateGameForMatch:(Card *)chosenCard forScore:(int)score{
-    if(self.totalTime >= 25)
+    if(self.totalTime >= 25){
+        if(self.totalTime >= 30)
+            MATCH_TIME_BONUS = 1;
         MATCH_TIME_BONUS = 2;
+    }
     else
-        MATCH_TIME_BONUS = 5;
-    self.score += score * MATCH_BONUS;
+        MATCH_TIME_BONUS = 4;
+    self.score += score * MATCH_BONUS * self.multiplier;
     self.totalTime += MATCH_TIME_BONUS;
     chosenCard.matched = YES;
     
@@ -162,10 +194,21 @@ NSMutableArray *chosenCards;
     }
 
     [chosenCards removeAllObjects];
+    
+    if(self.isMultiplierActive)
+        self.multiplier++;
 }
 
 //Update score for mismatch
 -(void)updateGameForMismatch:(Card *)chosenCard{
+    if(self.score >= 100){
+        MISMATCH_PENALTY = ceil(self.score/MISMATCH_PEN_RATIO_DENOMINATOR);
+        if(MISMATCH_PENALTY > MAXIMUM_MISMATCH_PEN)
+            MISMATCH_PENALTY = MAXIMUM_MISMATCH_PEN;
+    }else{
+        MISMATCH_PENALTY = 1;
+    }
+    self.multiplier = 1;
     self.score -= MISMATCH_PENALTY;
     
     for(Card *otherCard in chosenCards){
@@ -177,22 +220,36 @@ NSMutableArray *chosenCards;
 //Update Time
 -(void)updateTime{
 //    NSLog(@"In Update Time");
+    
     if(self.totalTime > 0){//Game Hasn't Ended
+        self.totalPlayTime++;
         self.totalTime--;
         if(self.subTime > 1)
             self.subTime--;
-        else{
+        else{//Reset Time and Shuffle Cards
             if(self.totalTime > SUB_TIME)
                 self.subTime = SUB_TIME;
             else
                 self.subTime = self.totalTime;
             [self populateGameWithCount:self.cardCount];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reset" object:nil];
+            int randomMultiplierProbabilityValue = arc4random_uniform(MULTIPLIER_PROBABILITY_DENOMINATOR);
+            if(randomMultiplierProbabilityValue == 0)
+                self.isMultiplierActive = YES;
+            else
+                self.isMultiplierActive = NO;
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:RESET_CARDS_NOTIFICATION object:nil];
         }
+        [[NSNotificationCenter defaultCenter] postNotificationName:UPDATE_TIME_NOTIFICATION object:nil];
     }
-    else{//Game Has Ended
-        [self.timer invalidate];
+    if(self.totalTime == 0){//Game Has Ended
+        
         //Update Flags Here or Something
+        [self.timer invalidate];
+        self.isGameActive = NO;
+        self.hasGameEnded = YES;
+        self.endGameDate = [NSDate dateWithTimeInterval:self.totalPlayTime sinceDate:self.startGameDate];
+        [[NSNotificationCenter defaultCenter] postNotificationName:GAME_ENDED_NOTIFICATION object:nil];
     }
 }
 
@@ -202,11 +259,9 @@ NSMutableArray *chosenCards;
         self.deck = (Deck *)someId;
     
     if([self.cards count] != 0){
-        NSLog(@"Removing all card before repopulation");
         [self.cards removeAllObjects];
     }
-    
-    NSLog(@"Repopulating cards in model");
+
     for(int i = 0; i < count; i++){
         Card *randomCard = [self.deck drawRandomCard];
         if(randomCard){
