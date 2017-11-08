@@ -8,6 +8,10 @@
 
 #import "HelpViewController.h"
 
+@interface HelpViewController()
+@property (weak, nonatomic) IBOutlet UIView *helpContentView;
+@end
+
 @implementation HelpViewController
 - (IBAction)dismissViewController:(id)sender {
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
@@ -51,6 +55,21 @@
                      completion:^(BOOL finished) {
                          [label removeFromSuperview];
                      }];
+}
+
+- (void)helpContentViewTapped{
+    //Do Nothing
+}
+
+- (BOOL)shouldAutorotate{
+    return YES;
+}
+
+- (void)viewDidLoad{
+    [super viewDidLoad];
+    
+    [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissViewController:)]];
+    [self.helpContentView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(helpContentViewTapped)]];
 }
 
 @end
