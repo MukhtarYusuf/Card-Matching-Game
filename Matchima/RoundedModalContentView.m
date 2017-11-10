@@ -17,7 +17,7 @@
 #define CORNER_RADIUS 8.0
 
 -(UIColor *)mecuryColorWithAlpha{
-    return [UIColor colorWithRed:230.0 green:230.0 blue:230.0 alpha:0.96];
+    return [UIColor colorWithRed:230.0/255 green:230.0/255 blue:230.0/255 alpha:0.96];
 }
 
 -(CGFloat)cornerRadius{
