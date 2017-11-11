@@ -94,7 +94,6 @@
     [[UIColor blackColor] setStroke];
     [roundedRect stroke];
     
-#warning remember to remove faceUp from set cards
     if(_faceUp){
         if([self.shape isEqualToString:@"Diamond"])
             [self drawAllDiamonds];

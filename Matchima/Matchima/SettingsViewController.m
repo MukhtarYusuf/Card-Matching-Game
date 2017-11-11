@@ -14,7 +14,9 @@
 @property (strong, nonatomic) NSUserDefaults *userDefaults;
 @property (strong, nonatomic) NSDictionary *settings;
 @property (strong, nonatomic) NSDictionary *menuColor;
+@property (strong, nonatomic) NSDictionary *saveButtonColor;
 
+@property (weak, nonatomic) IBOutlet UIView *settingsContentView;
 @property (weak, nonatomic) IBOutlet UISwitch *woodThemeSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *darkThemeSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *classicThemeSwitch;
@@ -99,14 +101,16 @@
                       HAS_BACKGROUND_IMAGE : @YES,
                       BACKGROUND_IMAGE : WOOD_BACKGROUND,
                       CARDBACK_IMAGE : CARDBACK,
-                      MENU_COLOR : self.menuColor
+                      MENU_COLOR : self.menuColor,
+                      SAVE_BUTTON_COLOR : self.saveButtonColor
                       };
     }else if([[self.userDefaults objectForKey:DARK_THEME] boolValue]){
         self.settings = @{
                       HAS_BACKGROUND_IMAGE : @YES,
                       BACKGROUND_IMAGE : DARK_BACKGROUND,
                       CARDBACK_IMAGE : CARDBACK_DARK,
-                      MENU_COLOR : self.menuColor
+                      MENU_COLOR : self.menuColor,
+                      SAVE_BUTTON_COLOR : self.saveButtonColor
                       };
     }
     else if([[self.userDefaults objectForKey:CLASSIC_THEME] boolValue]){
@@ -114,7 +118,8 @@
                       HAS_BACKGROUND_IMAGE : @NO,
                       BACKGROUND_IMAGE : NO_BACKGROUND,
                       CARDBACK_IMAGE : CARDBACK,
-                      MENU_COLOR : self.menuColor
+                      MENU_COLOR : self.menuColor,
+                      SAVE_BUTTON_COLOR : self.saveButtonColor
                       };
     }
     [self.userDefaults setObject:self.settings forKey:SETTINGS];
@@ -136,16 +141,48 @@
     return _settings;
 }
 
-#warning Consider adding number values to header file
 - (NSDictionary *)menuColor{
-    _menuColor = @{
-                   RED : @118,
-                   GREEN : @67,
-                   BLUE : @0,
-                   ALPHA : @0.35
-                   };
+    if([[self.userDefaults objectForKey:CLASSIC_THEME] boolValue]){//Menu color for classic theme
+        _menuColor = @{
+                       RED : [NSNumber numberWithInt:RED_CLASSIC_MENU_VALUE],
+                       GREEN : [NSNumber numberWithInt:GREEN_CLASSIC_MENU_VALUE],
+                       BLUE : [NSNumber numberWithInt:BLUE_CLASSIC_MENU_VALUE],
+                       ALPHA : [NSNumber numberWithDouble:ALPHA_CLASSIC_MENU_VALUE]
+                       };
+    }else{
+        _menuColor = @{
+                       RED : [NSNumber numberWithInt:RED_WOOD_MENU_VALUE],
+                       GREEN : [NSNumber numberWithInt:GREEN_WOOD_MENU_VALUE],
+                       BLUE : [NSNumber numberWithInt:BLUE_WOOD_MENU_VALUE],
+                       ALPHA : [NSNumber numberWithDouble:ALPHA_WOOD_MENU_VALUE]
+                       };
+    }
     
     return _menuColor;
+}
+
+- (NSDictionary *)saveButtonColor{
+    if([[self.userDefaults objectForKey:CLASSIC_THEME] boolValue]){
+        _saveButtonColor = @{
+                             RED : [NSNumber numberWithInt:RED_CLASSIC_SAVE_BUTTON_VALUE],
+                             GREEN : [NSNumber numberWithInt:GREEN_CLASSIC_SAVE_BUTTON_VALUE],
+                             BLUE : [NSNumber numberWithInt:BLUE_CLASSIC_SAVE_BUTTON_VALAUE],
+                             ALPHA : [NSNumber numberWithDouble:ALPHA_CLASSIC_SAVE_BUTTON_VALUE]
+                             };
+    }else{
+        _saveButtonColor = @{
+                             RED : [NSNumber numberWithInt:RED_WOOD_SAVE_BUTTON_VALUE],
+                             GREEN : [NSNumber numberWithInt:GREEN_WOOD_SAVE_BUTTON_VALUE],
+                             BLUE : [NSNumber numberWithInt:BLUE_WOOD_SAVE_BUTTON_VALUE],
+                             ALPHA : [NSNumber numberWithDouble:ALPHA_WOOD_SAVE_BUTTON_VALUE]
+                             };
+    }
+    
+    return _saveButtonColor;
+}
+
+- (void)settingsContentViewTapped{
+    //Do Nothing
 }
 
 //--View Controller Lifecycle
@@ -155,6 +192,13 @@
     [super viewDidLoad];
     
     [self setUpSwitches];
+    [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissViewController:)]];
+    [self.settingsContentView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(settingsContentViewTapped)]];
+}
+
+- (BOOL)shouldAutorotate{
+    NSLog(@"In Settings should auto rotate");
+    return YES;
 }
 
 @end

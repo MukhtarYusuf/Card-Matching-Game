@@ -21,7 +21,7 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
     //Always pause game while segueing
-    if(!self.isGamePaused)
+    if(!self.game.isGamePaused)
         [self pauseGame];
     
     if([segue.identifier isEqualToString:@"Show HighScores"]){
@@ -31,8 +31,8 @@
     }
 }
 
-static int NUMBER_OF_COLUMNS = 6;
-static int NUMBER_OF_ROWS = 5;
+static int NUMBER_OF_COLUMNS = 5;
+static int NUMBER_OF_ROWS = 4;
 
 -(void)initializeAndAddCardViews{
     [self.cardViews removeAllObjects];
@@ -74,9 +74,7 @@ static int NUMBER_OF_ROWS = 5;
 //}
 
 - (void)setCardBackImages{
-    NSLog(@"Setting card back images");
     for(PlayingCardView *pcv in self.cardViews){
-        NSLog(@"Setting one card back image");
         pcv.cardBackImageName = [self.settings objectForKey:CARDBACK_IMAGE];
     }
 }
@@ -98,6 +96,10 @@ static int NUMBER_OF_ROWS = 5;
 //Overriden in order to use local variables
 -(CGFloat)deductFromHeightCoeff{
     return self.cardContainerView.bounds.size.height/7;
+}
+
+- (BOOL)shouldAutorotate{
+    return [super shouldAutorotate];
 }
 
 @end

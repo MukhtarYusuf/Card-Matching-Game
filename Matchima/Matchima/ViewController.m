@@ -73,7 +73,6 @@
 }
 
 - (void)touchSetCard:(UITapGestureRecognizer *)sender{
-//    [self drawRandomSetCard];
     [UIView transitionWithView:self.setCardView
                       duration:0.6
                        options:UIViewAnimationOptionTransitionFlipFromRight
@@ -90,14 +89,12 @@
     
     [self.playingCardView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchPlayingCard:)]];
     
-    [self.setCardView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchSetCard:)] ];
+    [self.setCardView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchSetCard:)]];
 }
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
 
 @end

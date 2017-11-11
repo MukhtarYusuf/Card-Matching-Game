@@ -10,16 +10,29 @@
 
 @interface  CardGameViewController()
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
+@property (weak, nonatomic) IBOutlet UILabel *multiplierLabel;
 @property (weak, nonatomic) IBOutlet UILabel *totalTimeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *subTimeLabel;
 @property (weak, nonatomic) IBOutlet UIButton *pauseButton;
+@property (weak, nonatomic) IBOutlet UILabel *resultsTitleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *pausedLabel;
+@property (weak, nonatomic) IBOutlet UILabel *topScoreLabel;
+@property (weak, nonatomic) IBOutlet UILabel *resultsScoreLabel;
+@property (weak, nonatomic) IBOutlet UILabel *resultsRankLabel;
+@property (weak, nonatomic) IBOutlet UILabel *resultsTotalTimeLabel;
+@property (weak, nonatomic) IBOutlet UIButton *saveScoreButton;
 
+@property (weak, nonatomic) IBOutlet UIView *resultsContainerView;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImage;
 @property (weak, nonatomic) IBOutlet UIView *menu;
 
+@property (nonatomic) BOOL isNewHSTop;
+@property (nonatomic) NSInteger newHSRank;
+@property (nonatomic) NSInteger newHSValue;
+@property (strong, nonatomic) NSString *nHSName;
+@property (strong, nonatomic) NSArray *highScoresLessThanNewScore;
+@property (strong, nonatomic) NSNumberFormatter *numberFormatter;
 
-@property (strong, nonatomic) CardMatchingGame *game;
 @property (strong, nonatomic) UIDynamicAnimator *animator;
 @property (strong, nonatomic) UIAttachmentBehavior *attachTopBehavior;
 @property (nonatomic) BOOL areCardsInPile;
@@ -37,8 +50,10 @@ static const double CARD_ASPECT_RATIO = 0.5;
 static int NUMBER_OF_COLUMNS = 4;
 static int NUMBER_OF_ROWS = 3;
 
+BOOL vCAlreadyAppearedOnce = NO;
+
 - (IBAction)pause:(id)sender {
-    if(self.isGamePaused)
+    if(self.game.isGamePaused)
         [self resumeGame];
     else
         [self pauseGame];
@@ -70,11 +85,71 @@ static int NUMBER_OF_ROWS = 3;
     [self drawThree];
 }
 
+- (IBAction)saveScore:(id)sender {
+    UIAlertController *saveAlert = [UIAlertController alertControllerWithTitle:@"Save Score" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *notMasterAlert = [UIAlertController alertControllerWithTitle:@"Not Allowed" message:@"You Must Beat the top Score to Earn the Title of MATCHIMA_MASTER" preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *saveAction = [UIAlertAction actionWithTitle:@"Save"
+                                                         style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * _Nonnull action) {
+                                                           //Call Save Function
+                                                           UITextField *saveTextField = [saveAlert.textFields firstObject];
+                                                           self.nHSName = saveTextField.text;
+                                                           NSString *lwrCaseNHSName = [self.nHSName lowercaseString];
+                                                           NSString *masterString = @"matchima_master";
+                                                           NSString *masterString1 = @"matchima master";
+                                                           if(([lwrCaseNHSName isEqualToString:masterString] || [lwrCaseNHSName isEqualToString:masterString1]) && self.isNewHSTop == NO){
+                                                               [self dismissViewControllerAnimated:YES completion:nil];
+                                                               [self presentViewController:notMasterAlert animated:YES completion:nil];
+                                                           }else{
+                                                            if(self.highScoresLessThanNewScore){//Not nil and no errors
+                                                        
+                                                                    [HighScore insertHighScoreWithRank:(int)self.newHSRank
+                                                                                                 name:self.nHSName
+                                                                                                value:self.newHSValue
+                                                                                             totalTime:self.game.totalPlayTime
+                                                                                                  date:[NSDate date]
+                                                                                             andContext:self.document.managedObjectContext];
+                                                               
+                                                                   for(HighScore *hs in self.highScoresLessThanNewScore){
+                                                                       if(hs.rank == 1)
+                                                                           hs.name = @"FORMER_MASTER";
+                                                                       hs.rank++;
+                                                                       
+                                                                       if(hs.rank > MAX_HIGHSCORES)//Only Keep Top 20 Scores
+                                                                           [self.document.managedObjectContext deleteObject:hs];
+                                                                   }
+                                                                   //Call success display status function
+                                                               }else{
+                                                                   //Call error display status function
+                                                               }
+                                                               [self dealAgainConfirm];
+                                                           }
+                                                           
+                                                       }];
+    UIAlertAction *dismissAction = [UIAlertAction actionWithTitle:@"Cancel"
+                                                            style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * _Nonnull action) {
+                                                              //Do Nothing
+                                                          }];
+    UIAlertAction *dismissAction1 = [UIAlertAction actionWithTitle:@"OK"
+                                                            style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * _Nonnull action) {
+                                                              //Do Nothing
+                                                          }];
+    
+    [saveAlert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.text = self.isNewHSTop ? @"MATCHIMA_MASTER" : @"My High Score";
+    }];
+    [saveAlert addAction:saveAction];
+    [saveAlert addAction:dismissAction];
+    [notMasterAlert addAction:dismissAction1];
+    
+    [self presentViewController:saveAlert animated:YES completion:nil];
+}
+
 -(void)tapRootView:(UITapGestureRecognizer *)sender{
-    NSLog(@"In tap gesture recognizer");
-    NSLog(@"Are cards in pile in tap: %@", self.areCardsInPile ? @"Yes":@"No");
     if(self.areCardsInPile){
-        NSLog(@"In tap gesture recognizer 2");
         self.areCardsInPile = !self.areCardsInPile;
         [self animateCardsToOriginalLocations];
     }
@@ -82,7 +157,6 @@ static int NUMBER_OF_ROWS = 3;
 
 -(void)panRootView:(UIPanGestureRecognizer *)sender{
     if(self.areCardsInPile){
-        NSLog(@"In Pan");
         UIView *topCard = [self.cardViews lastObject];
         if(sender.state == UIGestureRecognizerStateBegan){
             _attachTopBehavior = [[UIAttachmentBehavior alloc] initWithItem:topCard attachedToAnchor:[sender locationInView:self.view]];
@@ -92,13 +166,13 @@ static int NUMBER_OF_ROWS = 3;
             [_attachTopBehavior setAnchorPoint:[sender locationInView:self.view]];
         }else if(sender.state == UIGestureRecognizerStateEnded){
             [self.animator removeBehavior:_attachTopBehavior];
+            _attachTopBehavior = nil;
         }
     }
 }
 
 -(void)pinchContainer:(UIPinchGestureRecognizer *)sender{
     UIView *topView = [self.cardViews lastObject];
-    NSLog(@"Are cards in pile: %@", self.areCardsInPile ? @"YES":@"NO");
     if(!self.areCardsInPile){
         if(sender.state == UIGestureRecognizerStateBegan){
             for(UIView *cardView in self.cardViews){
@@ -115,7 +189,7 @@ static int NUMBER_OF_ROWS = 3;
                                              UIAttachmentBehavior *attachmentBehavior = [[UIAttachmentBehavior alloc] initWithItem:cardView attachedToItem:topView];
                                              [self.animator addBehavior:attachmentBehavior];
                                          }else if (cardView == topView)
-                                             self.areCardsInPile = !self.areCardsInPile;
+                                             self.areCardsInPile = YES;
                                      }
                                  }
                  ];
@@ -129,10 +203,6 @@ static int NUMBER_OF_ROWS = 3;
     
     self.pauseButton.enabled = YES;
     NSUInteger chosenCardIndex = [self.cardViews indexOfObject:sender.view];
-    NSLog(@"In tapCard: %lu", chosenCardIndex);
-//    Card *card = [self.game cardAtIndex:chosenCardIndex];
-//    
-//    NSLog(@"Is this tapped chosen: %@", card.isChosen ? @"YES":@"NO");
     [self.game chooseCardAtIndex:chosenCardIndex];
     [self updateUI];
 }
@@ -178,17 +248,14 @@ static int NUMBER_OF_ROWS = 3;
 }
 
 -(void)updateUI{
-//    NSLog(@"UpdateUI Called");
     NSMutableArray *addedCards = [[NSMutableArray alloc] initWithCapacity:3];
     for(UIView *cardView in self.cardViews){
         NSUInteger cardIndex = [self.cardViews indexOfObject:cardView];
         Card *card = [self.game cardAtIndex:cardIndex];
         if([card isKindOfClass:[PlayingCard class]]){
-//            NSLog(@"UpdateUI Called and card is playing card");
             if([cardView isKindOfClass:[PlayingCardView class]]){
                 PlayingCardView *playingCardView = (PlayingCardView *)cardView;
                 PlayingCard *playingCard = (PlayingCard *)card;
-//                NSLog(@"Is this chosen: %@", card.isChosen ? @"YES":@"NO");
                 playingCardView.rank = playingCard.rank;
                 playingCardView.suit = playingCard.suit;
                 playingCardView.isMatched = playingCard.isMatched;
@@ -239,16 +306,42 @@ static int NUMBER_OF_ROWS = 3;
         }
     }
     [self.cardViews addObjectsFromArray:addedCards];
-//    NSLog(@"Number of cards in outlet: %lu", [self.cardViews count]);
-//    NSLog(@"Number of cards in added cards: %lu", [addedCards count]);
-    self.scoreLabel.text = [NSString stringWithFormat:@"Score: %li", self.game.score];
+    
+    self.pauseButton.enabled = self.game.isGameActive;
+    self.multiplierLabel.hidden = self.game.isMultiplierActive ? NO : YES;
+    NSString *scoreLabelString = [self.numberFormatter stringFromNumber:[NSNumber numberWithInteger:self.game.score]];
+    self.scoreLabel.text = [NSString stringWithFormat:@"Score: %@", scoreLabelString];
+    self.multiplierLabel.text = [NSString stringWithFormat:@"%lix",(unsigned long)self.game.multiplier];
     
     [self updateTimeLabels];
+    [self updateUIForGamePaused];
+    [self updateUIForGameEnded];
 }
 
 -(void)updateTimeLabels{
-    self.totalTimeLabel.text = [NSString stringWithFormat:@"Time Left: %li", self.game.totalTime];
-    self.subTimeLabel.text = [NSString stringWithFormat:@"Reset Time: %li", self.game.subTime];
+    self.totalTimeLabel.text = [NSString stringWithFormat:@"Time Left: %li", (unsigned long)self.game.totalTime];
+    self.subTimeLabel.text = [NSString stringWithFormat:@"Reset Time: %li", (unsigned long)self.game.subTime];
+}
+
+- (void)updateUIForGameEnded{
+    if(self.game.hasGameEnded){
+        self.cardContainerView.hidden = YES;
+        self.scoreLabel.hidden = YES;
+        self.multiplierLabel.hidden = YES;
+        self.resultsContainerView.hidden = NO;
+    }
+}
+
+- (void)updateUIForGamePaused{
+    if(self.game.isGamePaused && self.game.isGameActive){
+        self.cardContainerView.hidden = YES;
+        self.pausedLabel.hidden = NO;
+        [self.pauseButton setImage:[UIImage imageNamed:@"Resume"] forState:UIControlStateNormal];
+    }else{
+        self.cardContainerView.hidden = NO;
+        self.pausedLabel.hidden = YES;
+        [self.pauseButton setImage:[UIImage imageNamed:@"Pause"] forState:UIControlStateNormal];
+    }
 }
 
 -(void)animateCardsToOriginalLocations{
@@ -260,33 +353,23 @@ static int NUMBER_OF_ROWS = 3;
     }
 }
 
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
-    if([keyPath isEqualToString:@"subTime"]){
-        [self updateTimeLabels];
-        if(self.game.totalTime == 0){//Game has ended
-            [self processEndOfGame];
-        }
-    }
-    
-#warning Remove KVO for cards
-    
-    if([keyPath isEqualToString:@"cards.@count"]){
-        NSLog(@"In cards change kvo");
-        NUMBER_OF_COLUMNS = 4;
-        NUMBER_OF_ROWS = 3;
-        self.cardContainerView.bounds = originalCardContainerBounds;
-        [self setUpContainerViewHeight];
-        [self setUpMyGrid];
-        [self removeAllCardSubViews];
-        [self initializeAndAddCardViews];
-        [self addTapGestureRecognizerToCards];
-        [self updateUI];
-    }
-}
-
-
 //--Getters and Setters--
 #pragma mark - Getters and Setters
+- (NSNumberFormatter *)numberFormatter{
+    if(!_numberFormatter){
+        _numberFormatter = [[NSNumberFormatter alloc] init];
+        [_numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    }
+    return _numberFormatter;
+}
+
+- (NSString *)nHSName{
+    if(!_nHSName)
+        _nHSName = @"";
+    
+    return _nHSName;
+}
+
 - (NSUserDefaults *)userDefaults{
     if(!_userDefaults)
         _userDefaults = [NSUserDefaults standardUserDefaults];
@@ -313,18 +396,11 @@ static int NUMBER_OF_ROWS = 3;
     return _myGridForCards;
 }
 
-@synthesize game = _game;
-
 -(CardMatchingGame *)game{
     if(!_game)
         _game = [self createGame];
     _game.threeCardGame = NO;
     return _game;
-}
-
-#warning Consider removing method
--(void)setGame:(CardMatchingGame *)game{
-    _game = game;
 }
 
 -(NSMutableArray *)cardViews{
@@ -369,6 +445,18 @@ static int NUMBER_OF_ROWS = 3;
     self.menu.backgroundColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
 }
 
+- (void)setUpSaveButtonColor{
+    NSDictionary *saveButtonColor = [self.settings objectForKey:SAVE_BUTTON_COLOR];
+    
+    float red = [[saveButtonColor objectForKey:RED] floatValue] / 255;
+    float green = [[saveButtonColor objectForKey:GREEN] floatValue] / 255;
+    float blue = [[saveButtonColor objectForKey:BLUE] floatValue] / 255;
+    double alpha = [[saveButtonColor objectForKey:ALPHA] doubleValue];
+    
+    UIColor *saveButtonCol = [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
+    self.saveScoreButton.backgroundColor = saveButtonCol;
+}
+
 -(void)hideNavBar{
     [self.navigationController setNavigationBarHidden:YES];
 }
@@ -395,16 +483,14 @@ static int NUMBER_OF_ROWS = 3;
 }
 
 -(CardMatchingGame *)createGame{
-    NSLog(@"Card count when creating game: %li", self.cardViews.count);
     return [[CardMatchingGame alloc] initWithCardCount:[self.cardViews count] usingDeck:[self createDeck]];
 }
 
--(void)addWillEnterBackgroundNotification{
+-(void)addWillResignActiveNotification{
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(pauseGame)
-                                                 name:UIApplicationDidEnterBackgroundNotification
-                                               object:nil
-     ];
+                                             selector:@selector(prepareForResignActive)
+                                                 name:UIApplicationWillResignActiveNotification
+                                               object:nil];
 }
 
 - (void)addSettingsChangedNotification{
@@ -414,35 +500,33 @@ static int NUMBER_OF_ROWS = 3;
                                                object:nil];
 }
 
--(void)addObserverForCards{
+-(void)addResetCardsNotification{
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateUI)
-                                                 name:@"reset"
+                                                 name:RESET_CARDS_NOTIFICATION
                                                object:nil];
 }
 
--(void)addKVOForCards{
-    [self.game addObserver:self
-                forKeyPath:@"cards.@count"
-                   options:NSKeyValueObservingOptionNew
-                   context:nil];
+-(void)addUpdateTimeNotification{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateTimeLabels)
+                                                 name:UPDATE_TIME_NOTIFICATION
+                                               object:nil];
 }
 
--(void)removeKVOForCards{
-    [self.game removeObserver:self
-                   forKeyPath:@"cards.@count"];
+-(void)addGameEndedNotification{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(processEndOfGame)
+                                                 name:GAME_ENDED_NOTIFICATION
+                                               object:nil];
 }
 
--(void)addKVOForGameTimers{
-    [self.game addObserver:self
-                forKeyPath:@"subTime"
-                   options:NSKeyValueObservingOptionNew
-                   context:nil];
-}
-
--(void)removeKVOForGameTimers{
-    [self.game removeObserver:self
-                   forKeyPath:@"subTime"];
+- (void)addNotifications{
+    [self addSettingsChangedNotification];
+    [self addWillResignActiveNotification];
+    [self addResetCardsNotification];
+    [self addUpdateTimeNotification];
+    [self addGameEndedNotification];
 }
 
 -(void)addTapGestureRecognizerToCards{
@@ -461,6 +545,10 @@ static int NUMBER_OF_ROWS = 3;
 
 -(void)addTapRecognizerToRootView{
     [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapRootView:)]];
+}
+
+- (void)addGestureRecognizers{
+    [self addTapGestureRecognizerToCards];
 }
 
 -(void)setUpContainerViewHeight{
@@ -495,8 +583,7 @@ static int NUMBER_OF_ROWS = 3;
     BOOL fileExists = [fileManager fileExistsAtPath:[url path]];
     if(fileExists){
         [self.document openWithCompletionHandler:^(BOOL success){
-            //Display contents of DB
-            [self displayDBContents];
+            [self insertDefaultValuesIntoDB];
         }];
     }else{
         [self.document saveToURL:url
@@ -504,20 +591,115 @@ static int NUMBER_OF_ROWS = 3;
                completionHandler:^(BOOL success) {
                    //Populate Database for the first time
                    [self insertDefaultValuesIntoDB];
-                   [self displayDBContents];
                }];
     }
 }
 
 //--Helper Methods--
 #pragma mark Helper Methods
+- (NSString *)stringFromTotalPlayTime:(NSInteger)totalPlayTime{
+    NSDate *startDate = [NSDate date];
+    NSDate *endDate = [NSDate dateWithTimeInterval:totalPlayTime sinceDate:startDate];
+    
+    NSCalendar *gregCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    NSCalendarUnit totalPlayTimeUnits = NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
+    
+    NSDateComponents *totalPlayTimeComponents = [gregCalendar components:totalPlayTimeUnits fromDate:startDate toDate:endDate options:0];
+    
+    NSString *result;
+    NSString *dayString;
+    NSString *hourString;
+    NSString *minuteString;
+    NSString *secondString;
+    
+    if(totalPlayTimeComponents.day == 0)
+        dayString = @"";
+    else
+        dayString = [NSString stringWithFormat:@" %lid", (long)totalPlayTimeComponents.day];
+    
+    if(totalPlayTimeComponents.hour == 0)
+        hourString = @"";
+    else
+        hourString = [NSString stringWithFormat:@" %lih", (long)totalPlayTimeComponents.hour];
+    
+    if(totalPlayTimeComponents.minute == 0)
+        minuteString = @"";
+    else
+        minuteString = [NSString stringWithFormat:@" %lim", (long)totalPlayTimeComponents.minute];
+    
+    secondString = [NSString stringWithFormat:@" %lis", (long)totalPlayTimeComponents.second];
+    result = [NSString stringWithFormat:@"%@%@%@%@", dayString,hourString,minuteString,secondString];
+    
+    return result;
+}
+
+- (void)prepareForResignActive{
+    [self pauseGame];
+    [self saveGameState];
+}
+
+- (void)saveGameState{
+    if(self.game.isGameActive){
+    //    self.userDefaults = [NSUserDefaults standardUserDefaults];
+        NSMutableArray *cardsData = [[NSMutableArray alloc] init]; //of NSData
+        
+        for(Card *card in self.game.cards){
+            if([card isKindOfClass:[PlayingCard class]]){
+                PlayingCard *playingCard = (PlayingCard *)card;
+                NSData *cardData = [NSKeyedArchiver archivedDataWithRootObject:playingCard];
+                [cardsData addObject:cardData];
+            }
+        }
+        NSDictionary *gameState = @{
+                                        IS_GAME_ACTIVE : [NSNumber numberWithBool:self.game.isGameActive],
+                                        IS_GAME_PAUSED : [NSNumber numberWithBool:self.game.isGamePaused],
+                                        SCORE : [NSNumber numberWithLong:self.game.score],
+                                        MULTIPLIER : [NSNumber numberWithLong:self.game.multiplier],
+                                        TOTAL_PLAY_TIME : [NSNumber numberWithLong:self.game.totalPlayTime],
+                                        TOTAL_TIME : [NSNumber numberWithLong:self.game.totalTime],
+                                        SUB_TIME : [NSNumber numberWithLong:self.game.subTime],
+                                        CARDS : cardsData
+                                    };
+        [self.userDefaults setObject:gameState forKey:GAME_STATE];
+        [self.userDefaults synchronize];
+    }
+}
+
+- (void)restoreGameState{
+//    self.userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    NSDictionary *gameState = [self.userDefaults objectForKey:GAME_STATE];
+    if(gameState){
+        NSMutableArray *loadedCards = [[NSMutableArray alloc] init];
+        NSArray *loadedCardsData = [gameState objectForKey:CARDS]; //Of NSData
+        for(NSData *loadedCardData in loadedCardsData){
+            id loadedObject = [NSKeyedUnarchiver unarchiveObjectWithData:loadedCardData];
+            
+            if([loadedObject isKindOfClass:[PlayingCard class]]){//Loading Playing Card
+                PlayingCard *loadedCard = (PlayingCard *)loadedObject;
+                [loadedCards addObject:loadedCard];
+            }
+        }
+        
+        self.game.isGameActive = [[gameState objectForKey:IS_GAME_ACTIVE] boolValue];
+        self.game.isGamePaused = [[gameState objectForKey:IS_GAME_PAUSED] boolValue];
+        self.game.score = [[gameState objectForKey:SCORE] longValue];
+        self.game.multiplier = [[gameState objectForKey:MULTIPLIER] longValue];
+        self.game.totalPlayTime = [[gameState objectForKey:TOTAL_PLAY_TIME] longValue];
+        self.game.totalTime = [[gameState objectForKey:TOTAL_TIME] longValue];
+        self.game.subTime = [[gameState objectForKey:SUB_TIME] longValue];
+        self.game.cards = loadedCards;
+        [self.userDefaults setObject:nil forKey:GAME_STATE];
+        [self.userDefaults synchronize];
+    }
+}
 
 - (void)settingsUpdated{
-    self.userDefaults = [NSUserDefaults standardUserDefaults];
+//    self.userDefaults = [NSUserDefaults standardUserDefaults];
     self.settings = [self.userDefaults objectForKey:SETTINGS];
-    NSLog(@"In settings updated %@", self.settings);
     [self setUpBackgroundImage];
     [self setUpMenuColor];
+    [self setUpSaveButtonColor];
     [self setCardBackImages];
 }
 
@@ -525,22 +707,21 @@ static int NUMBER_OF_ROWS = 3;
 - (void)setCardBackImages{
 }
 
-#warning Consider setup method for dealAgainConfirm and viewDidLoad
 -(void)dealAgainConfirm{
+    [self.userDefaults setObject:nil forKey:GAME_STATE];
     self.pausedLabel.hidden = YES;
+    self.saveScoreButton.hidden = NO;
+    self.resultsContainerView.hidden = YES;
+    self.scoreLabel.hidden = NO;
+    self.multiplierLabel.hidden = NO;
     self.cardContainerView.hidden = NO;
     self.pauseButton.enabled = NO;
-    self.isGamePaused = NO;
-    [self removeKVOForGameTimers];
-    [self removeKVOForCards];
     NUMBER_OF_COLUMNS = 4;
     NUMBER_OF_ROWS = 3;
     self.cardContainerView.bounds = originalCardContainerBounds;
     [self setUpContainerViewHeight];
     [self setUpMyGrid];
     self.game = [self createGame];
-    [self addKVOForGameTimers];
-    [self addKVOForCards];
     [self removeAllCardSubViews];
     [self initializeAndAddCardViews];
     [self addTapGestureRecognizerToCards];
@@ -548,55 +729,62 @@ static int NUMBER_OF_ROWS = 3;
 }
 
 -(void)pauseGame{
-    if(self.pauseButton.isEnabled){//Only Pause if the game's started
-        if(!self.isGamePaused){
+    if(self.game.isGameActive){//Only Pause if the game's started and not ended
+        if(!self.game.isGamePaused){
             [self.game.timer invalidate];
-            
-            self.cardContainerView.hidden = YES;
-            self.pausedLabel.hidden = NO;
-            self.isGamePaused = YES;
+            self.game.isGamePaused = YES;
+            [self updateUI];
         }
     }
-    
-//    UIAlertController *pauseAlert = [UIAlertController alertControllerWithTitle:@"Game Paused"
-//                                                                        message:nil preferredStyle:UIAlertControllerStyleAlert];
-//    
-//    UIAlertAction *unPauseAction = [UIAlertAction actionWithTitle:@"Resume"
-//                                                            style:UIAlertActionStyleCancel
-//                                                          handler:^(UIAlertAction * _Nonnull action) {
-//                                                              [self resumeGame];
-//                                                          }];
-//    [pauseAlert addAction:unPauseAction];
-//    [self presentViewController:pauseAlert
-//                       animated:YES
-//                     completion:nil];
 }
 
 -(void)resumeGame{
-    if(self.isGamePaused){
-        self.cardContainerView.hidden = NO;
-        self.pausedLabel.hidden = YES;
+    if(self.game.isGamePaused){
         self.game.timer = [NSTimer timerWithTimeInterval:1.0f
                                              target:self.game
                                            selector:@selector(updateTime)
                                            userInfo:nil
                                             repeats:YES];
         
-        [[NSRunLoop currentRunLoop] addTimer:self.game.timer forMode:NSRunLoopCommonModes];;
-        self.isGamePaused = NO;
+        [[NSRunLoop currentRunLoop] addTimer:self.game.timer forMode:NSRunLoopCommonModes];
+        self.game.isGamePaused = NO;
+        [self updateUI];
     }
 }
 
 -(void)insertDefaultValuesIntoDB{
-    NSArray *ranks = @[@1, @2, @3, @4, @5, @6, @7, @8, @9, @10];
-    NSArray *names = @[@"Matchima_Master", @"Matchima_Pro", @"ProGamer", @"Dude", @"Legend", @"Winner", @"Champion", @"Mr Incredible", @"The Destroyer", @"Stewie"];
-    NSArray *scores = @[@100, @90, @80, @70, @60, @50, @40, @30, @25, @20];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"HighScore"];
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"rank"
+                                                                     ascending:YES];
+    fetchRequest.sortDescriptors = @[sortDescriptor];
     
-    for(int i = 0; i < [ranks count]; i++){
-        [HighScore insertHighScoreWithRank:[(NSNumber *)ranks[i] intValue]
-                                      name:names[i]
-                                     value:[(NSNumber *)scores[i] intValue]
-                                andContext:self.document.managedObjectContext];
+    NSArray *highScores = [[NSArray alloc] init];
+    
+    highScores = [self.document.managedObjectContext executeFetchRequest:fetchRequest
+                                                                   error:nil];
+    
+    if(!highScores || [highScores count] == 0){//If Database is empty
+        NSArray *ranks = @[@1, @2, @3, @4, @5, @6, @7, @8, @9, @10, @11, @12, @13, @14, @15, @16, @17, @18, @19, @20];
+        NSArray *names = @[@"Matchima_Master", @"Matchima_Pro", @"ProGamer", @"Dude", @"Legend", @"Winner", @"Champion", @"Mr Incredible", @"The Destroyer", @"Stewie", @"WorldClass", @"Player", @"The Great", @"Gamer", @"Couch_Lad", @"Nerdy", @"Specimen", @"King", @"Joker", @"Ace"];
+        NSArray *scores = @[@8000, @7500, @7000, @2900, @2860, @2800, @2000, @1600, @500, @300, @100, @90, @80, @70, @60, @50, @40, @30, @25, @20];
+        NSArray *totalPlayTimes = @[@6000, @5000, @4500, @925, @900, @850, @800, @750, @740, @700, @600, @550, @500, @450, @400, @350, @300, @250, @200, @150];
+//        NSArray *scores1 = @[@20, @0, @0, @0, @0, @0, @0, @0, @0, @0, @0, @0, @0, @0, @0, @0, @0, @0, @0, @0];
+        
+        NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+        dateComponents.day = 20;
+        dateComponents.month = 10;
+        dateComponents.year = 2017;
+        
+        NSDate *achievedOnDate = [[NSCalendar currentCalendar] dateFromComponents:dateComponents];
+        
+        for(int i = 0; i < [ranks count]; i++){
+            [HighScore insertHighScoreWithRank:[(NSNumber *)ranks[i] intValue]
+                                          name:names[i]
+                                         value:[(NSNumber *)scores[i] longValue]
+                                     totalTime:[(NSNumber *)totalPlayTimes[i] longValue]
+                                          date:achievedOnDate
+                                    andContext:self.document.managedObjectContext];
+        }
     }
 }
 
@@ -612,17 +800,22 @@ static int NUMBER_OF_ROWS = 3;
                                                                        error:nil];
     
     for(HighScore *highScore in highScores){
-        NSLog(@"Rank: %i   Name: %@  Score: %i", highScore.rank, highScore.name, highScore.value);
+        NSLog(@"Rank: %i   Name: %@  Score: %lli", highScore.rank, highScore.name, highScore.value);
     }
 }
 
 -(void)processEndOfGame{
-#warning Check cast to int
-    BOOL isTopScore = NO;
+    
+    self.isNewHSTop = NO;
     BOOL isHighScore = NO;
-    int newScore = (int)self.game.score;
-    __block int newRank = 0;
-    __block NSString *newName = @"";
+    
+    self.newHSValue = self.game.score;
+    
+    NSString *totalPlayTimeString = [self stringFromTotalPlayTime:self.game.totalPlayTime];
+    
+    NSDateFormatter *totalPlayTimeFormatter = [[NSDateFormatter alloc] init];
+    totalPlayTimeFormatter.dateStyle = NSDateFormatterNoStyle;
+    totalPlayTimeFormatter.timeStyle = NSDateFormatterMediumStyle;
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"HighScore"];
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"rank"
@@ -630,7 +823,8 @@ static int NUMBER_OF_ROWS = 3;
     NSString *predicateStringForHighScoresLessThanNew = @"(rank <= %i) AND (value < %i)";
     NSString *predicateStringForAllHighScores = @"rank <= %i";
     
-    NSPredicate *predicateForHighScoresLessThanNew = [NSPredicate predicateWithFormat:predicateStringForHighScoresLessThanNew, MAX_HIGHSCORES, newScore];
+    NSPredicate *predicateForHighScoresLessThanNew = [NSPredicate predicateWithFormat:predicateStringForHighScoresLessThanNew, MAX_HIGHSCORES, self.newHSValue];
+    
     NSPredicate *predicateForAllHighScores = [NSPredicate predicateWithFormat:predicateStringForAllHighScores, MAX_HIGHSCORES];
     
     
@@ -638,7 +832,8 @@ static int NUMBER_OF_ROWS = 3;
     fetchRequest.predicate = predicateForHighScoresLessThanNew;
     
     NSError *error;
-    NSArray *highScoresLessThanNewScore = [self.document.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    self.highScoresLessThanNewScore = [self.document.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    NSArray *highScoresLessThanNewScore = self.highScoresLessThanNewScore;
     
     fetchRequest.predicate = predicateForAllHighScores;
     NSArray *allHighScores = [self.document.managedObjectContext executeFetchRequest:fetchRequest error:&error];
@@ -647,79 +842,47 @@ static int NUMBER_OF_ROWS = 3;
         isHighScore = YES;
     
     HighScore *topScore = [allHighScores firstObject];
-    if(newScore > topScore.value)
-        isTopScore = YES;
+    if(self.newHSValue > topScore.value)
+        self.isNewHSTop = YES;
     
-    NSString *alertTitle = @"";
+    //--Added code block--
+    
     if(isHighScore){
-        if(isTopScore)
-            alertTitle = @"Excellent! You Beat the Top Score!";
-        else
-            alertTitle = @"Congratulations! You Got a High Score";
-    }else
-        alertTitle = @"Game Over";
-    
-    NSString *alertMessage = [NSString stringWithFormat:@"\nTop Score: %i \nYour Score: %i", topScore.value, newScore];
-    
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle
-                                                                             message:alertMessage
-                                                                      preferredStyle:UIAlertControllerStyleAlert];
-    
-    
-    UIAlertAction *dismissAction = [UIAlertAction
-                                    actionWithTitle:@"Cancel"
-                                    style:UIAlertActionStyleDefault
-                                    handler:^(UIAlertAction * _Nonnull action) {
-                                        [self dealAgainConfirm];
-                                    }
-                                    ];
-    UIAlertAction *saveAction = [UIAlertAction actionWithTitle:@"Save Score"
-                                                         style:UIAlertActionStyleDefault
-                                                       handler:^(UIAlertAction * _Nonnull action) {
-                                                           if(highScoresLessThanNewScore){
-                                                               if(isHighScore){
-                                                                   HighScore *firstHighScore = (HighScore *)[highScoresLessThanNewScore firstObject];
-                                                                   newRank = firstHighScore.rank;
-                                                                   UITextField *alertTextField = [alertController.textFields firstObject];
-                                                                   newName = alertTextField.text;
-                                                                   
-                                                                   [HighScore insertHighScoreWithRank:newRank
-                                                                                                 name:newName
-                                                                                                value:newScore
-                                                                                           andContext:self.document.managedObjectContext];
-                                                                   for(HighScore *hs in highScoresLessThanNewScore){
-                                                                       hs.rank++;
-                                                                       
-                                                                       if(hs.rank > MAX_HIGHSCORES)//Only Keep Top 20 Scores
-                                                                           [self.document.managedObjectContext deleteObject:hs];
-                                                                   }
-                                                               }
-                                                           }else{
-                                                               NSLog(@"Error: %@", error);
-                                                           }
-                                                           [self dealAgainConfirm];
-                                                       }];
-    if(isHighScore){
-        [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-            textField.text = @"My High Score";
-        }];
-        [alertController addAction:saveAction];
+        HighScore *firstHighScore = (HighScore *)[highScoresLessThanNewScore firstObject];
+        self.newHSRank = firstHighScore.rank;
     }
-    [alertController addAction:dismissAction];
+    self.pauseButton.enabled = NO;
     
-    [self presentViewController:alertController
-                       animated:YES
-                     completion:nil];
-
+    self.topScoreLabel.text = [NSString stringWithFormat:@"Top Score: %lli", topScore.value];
+    self.resultsScoreLabel.text = [NSString stringWithFormat:@"Your Score: %li", (long)self.newHSValue];
+    self.resultsRankLabel.text = isHighScore ? [NSString stringWithFormat:@"Rank: %li", (long)self.newHSRank] : @"Rank: Not top 20";
+    self.resultsTotalTimeLabel.text = [NSString stringWithFormat:@"Total Play Time: %@", totalPlayTimeString];
+    self.saveScoreButton.hidden = isHighScore ? NO : YES;
+    
+    NSString *resultsTitle = @"";
+    if(isHighScore){
+        if(self.isNewHSTop)
+            resultsTitle = @"Excellent! You Beat the Top Score! You May Now Claim the Title of MATCHIMA_MASTER!";
+        else
+            resultsTitle = @"Congratulations! You Got a High Score!";
+    }else
+        resultsTitle = @"Game Over";
+    self.resultsTitleLabel.text = resultsTitle;
+    
+    [self updateUIForGameEnded];
+    //--End of added code block--
 }
 
 //--Creation Method for Core Data--
-//+ (void)insertHighScoreWithRank:(int)rank name:(NSString *)name value:(int)value andContext:(nonnull NSManagedObjectContext *)context{
+//+ (void)insertHighScoreWithRank:(int)rank name:(NSString *)name value:(long)value totalTime:(long)totalTime date:(NSDate *)date andContext:(nonnull NSManagedObjectContext *)context{
+//    
 //    HighScore *highScore = [NSEntityDescription insertNewObjectForEntityForName:@"HighScore" inManagedObjectContext:context];
 //    
 //    highScore.rank = rank;
 //    highScore.name = name;
 //    highScore.value = value;
+//    highScore.totalTime = totalTime;
+//    highScore.date = date;
 //}
 
 
@@ -729,25 +892,16 @@ static int NUMBER_OF_ROWS = 3;
     [super viewDidLoad];
     [self setUpBackgroundImage];
     [self setUpMenuColor];
-    self.pauseButton.enabled = NO;
-    originalCardContainerBounds = self.cardContainerView.bounds;
+    [self setUpSaveButtonColor];
+//    originalCardContainerBounds = self.cardContainerView.bounds;
     [self hideNavBar];
-    [self setUpContainerViewHeight];
-    [self setUpMyGrid];
-//    [self setUpGrid];
-    [self initializeAndAddCardViews];
-    [self addTapGestureRecognizerToCards];
-    [self addPinchRecognizerToCardContainer];
-    [self addPanRecognizerToRootView];
-    [self addTapRecognizerToRootView];
-    [self addKVOForGameTimers];
-    [self addKVOForCards];
-    [self addSettingsChangedNotification];
-    [self addWillEnterBackgroundNotification];
-    [self addObserverForCards];
-    [self updateUI];
+//    [self setUpContainerViewHeight];
+//    [self setUpMyGrid];
+//    [self initializeAndAddCardViews];
+    [self addNotifications];
+    
+//    [self restoreGameState];
     [self createAndOpenManagedDocument];
-    NSLog(@"Card outlet count: %lu", (unsigned long)[self.cardViews count]);
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -760,7 +914,34 @@ static int NUMBER_OF_ROWS = 3;
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self hideNavBar];
-    self.title = @"Playing Card Game";
+    self.title = @"";
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    if(vCAlreadyAppearedOnce == NO){
+        //Add Stuff That was Previously in viewDidLoad
+        originalCardContainerBounds = self.cardContainerView.bounds;
+        [self setUpContainerViewHeight];
+        [self setUpMyGrid];
+        [self initializeAndAddCardViews];
+        [self addTapGestureRecognizerToCards];
+        [self restoreGameState];
+//        self.pauseButton.enabled = self.game.isGameActive;
+        [self updateUI];
+    }
+    vCAlreadyAppearedOnce = YES;
+}
+
+- (void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (BOOL)shouldAutorotate{
+    return NO;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
+    return UIInterfaceOrientationMaskPortrait;
 }
 
 @end

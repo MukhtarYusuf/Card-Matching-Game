@@ -27,12 +27,14 @@
 
 @property (strong, nonatomic) IBOutletCollection(UIView) NSMutableArray *cardViews;
 @property (weak, nonatomic) IBOutlet UIView *cardContainerView;
+
 @property (strong, nonatomic) Grid *gridForCards; //Protected for subclasses
 @property (strong, nonatomic) MyGrid *myGridForCards; //Protected for subclasses
 @property (strong, nonatomic) NSMutableArray *cardViewFrames; //Protected for subclasses
+@property (strong, nonatomic) CardMatchingGame *game; //Protected for subclasses
 @property (strong, nonatomic) UIManagedDocument *document;
 
-@property (nonatomic) BOOL isGamePaused; //Protected for subclass
+//@property (nonatomic) BOOL isGamePaused; //Protected for subclass
 
 -(void)pauseGame;
 @end

@@ -8,12 +8,27 @@
 
 #import "HighScoresCDTVC.h"
 #import "HighScore+CoreDataProperties.h"
+#import "HighScoreDetailsViewController.h"
 
 @interface HighScoresCDTVC()
-
+@property (strong, nonatomic) NSNumberFormatter *numberFormatter;
 @end
 
 @implementation HighScoresCDTVC
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    NSString *identifier = @"Show HS Detail";
+    if([segue.identifier isEqualToString:identifier]){
+        if([sender isKindOfClass:[UITableViewCell class]]){
+            UITableViewCell *cellSender = (UITableViewCell *)sender;
+            NSIndexPath *indexPath = [self.tableView indexPathForCell:cellSender];
+            HighScore *hs = [self.fetchedResultsController objectAtIndexPath:indexPath];
+            
+            HighScoreDetailsViewController *hsdvc = (HighScoreDetailsViewController *)segue.destinationViewController;
+            hsdvc.highScore = hs;
+        }
+    }
+}
 
 //--UITableView DataSource--
 #pragma mark UITableView DataSource
@@ -35,7 +50,9 @@
     
     rankLabel.text = [NSString stringWithFormat:@"%i", highScore.rank];
     nameLabel.text = highScore.name;
-    valueLabel.text = [NSString stringWithFormat:@"%i", highScore.value];
+    
+    NSString *valueString = [self.numberFormatter stringFromNumber:[NSNumber numberWithLongLong:highScore.value]];
+    valueLabel.text = [NSString stringWithFormat:@"%@", valueString];
     
     return tableViewCell;
 }
@@ -52,15 +69,22 @@
 -(void)setContext:(NSManagedObjectContext *)context{
     _context = context;
     if(_context){
-        NSLog(@"In context setter");
         [self setUpFetchedResultsController];
     }
+}
+
+- (NSNumberFormatter *)numberFormatter{
+    if(!_numberFormatter){
+        _numberFormatter = [[NSNumberFormatter alloc] init];
+        [_numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    }
+    
+    return _numberFormatter;
 }
 
 //--Setup Code--
 #pragma mark Setup Code
 -(void)setUpFetchedResultsController{
-    NSLog(@"In set up fetched results controller");
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"HighScore"];
     fetchRequest.fetchLimit = MAX_HIGHSCORES;
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"rank"

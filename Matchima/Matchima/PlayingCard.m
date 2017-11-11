@@ -10,10 +10,14 @@
 
 @implementation PlayingCard
 
+#define CHOSEN_KEY @"chosen"
+#define MATCHED_KEY @"matched"
+#define RANK_KEY @"rank"
+#define SUIT_KEY @"suit"
+
 - (int)match:(NSArray *)otherCards{
     int score = 0;
     NSUInteger numberOfOtherCards = [otherCards count];
-    NSLog(@"Number of Cards in Match: %li", numberOfOtherCards);
     
     if(numberOfOtherCards == 1){ //Matching against one card
         PlayingCard *otherCard = [otherCards firstObject];
@@ -26,10 +30,8 @@
             score += [PlayingCard scoreCard:self with:otherCards[i]];
             if(i == numberOfOtherCards-2)
                 score += [PlayingCard scoreCard:self with:otherCards[i+1]];
-            NSLog(@"Score: %i", score);
             for(int j = i+1; j <= numberOfOtherCards-1; j++){
                 score += [PlayingCard scoreCard:otherCards[i] with:otherCards[j]];
-                NSLog(@"Score: %i", score);
             }
         }
     }
@@ -90,6 +92,25 @@
     playingCardCopy.suit = [self.suit copyWithZone:zone];
     
     return playingCardCopy;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder{
+    [aCoder encodeBool:self.chosen forKey:CHOSEN_KEY];
+    [aCoder encodeBool:self.matched forKey:MATCHED_KEY];
+    [aCoder encodeInteger:self.rank forKey:RANK_KEY];
+    [aCoder encodeObject:self.suit forKey:SUIT_KEY];
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder{
+    self = [super init];
+    if(self){
+        self.chosen = [aDecoder decodeBoolForKey:CHOSEN_KEY];
+        self.matched = [aDecoder decodeBoolForKey:MATCHED_KEY];
+        self.rank = [aDecoder decodeIntegerForKey:RANK_KEY];
+        self.suit = [aDecoder decodeObjectForKey:SUIT_KEY];
+    }
+    
+    return self;
 }
 
 @end

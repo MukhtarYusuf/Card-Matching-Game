@@ -2,7 +2,7 @@
 //  HighScore+CoreDataClass.h
 //  Matchima
 //
-//  Created by Mukhtar Yusuf on 8/19/17.
+//  Created by Mukhtar Yusuf on 10/27/17.
 //  Copyright © 2017 Mukhtar Yusuf. All rights reserved.
 //
 
@@ -17,4 +17,4 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_ASSUME_NONNULL_END
 
-//#import "HighScore+CoreDataProperties.h"
+#import "HighScore+CoreDataProperties.h"

@@ -2,7 +2,7 @@
 //  HighScore+CoreDataProperties.h
 //  Matchima
 //
-//  Created by Mukhtar Yusuf on 8/19/17.
+//  Created by Mukhtar Yusuf on 10/27/17.
 //  Copyright © 2017 Mukhtar Yusuf. All rights reserved.
 //
 
@@ -14,12 +14,14 @@ NS_ASSUME_NONNULL_BEGIN
 @interface HighScore (CoreDataProperties)
 
 + (NSFetchRequest<HighScore *> *)fetchRequest;
++ (void)insertHighScoreWithRank:(int)rank name:(NSString *)name value:(long)value totalTime:(long)totalTime date:(NSDate *)date andContext:(nonnull NSManagedObjectContext *)context;
 
+@property (nullable, nonatomic, copy) NSDate *date;
 @property (nullable, nonatomic, copy) NSString *name;
 @property (nonatomic) int32_t rank;
-@property (nonatomic) int32_t value;
+@property (nonatomic) int64_t totalTime;
+@property (nonatomic) int64_t value;
 
-+ (void)insertHighScoreWithRank:(int)rank name:(NSString *)name value:(int)value andContext:(nonnull NSManagedObjectContext *)context;
 @end
 
 NS_ASSUME_NONNULL_END
