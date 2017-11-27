@@ -1,2 +1,1 @@
-# Card-Game
-A beautiful card matching game. Contains two different games; including the famous playing cards, and set cards.
+Matchima is a game that'll test your speed, accuracy, and patience combined. Race against time to score as many points as possible by matching playing cards before the clock runs out. Adaptive scoring and timing make the game more intense as you score more points and accumulate more time
