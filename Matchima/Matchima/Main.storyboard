@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="s3Z-uk-Qmn">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="s3Z-uk-Qmn">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
-        <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -39,17 +33,17 @@
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Help" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0YL-db-YOB">
-                                        <rect key="frame" x="27" y="56" width="288" height="47"/>
+                                        <rect key="frame" x="27.5" y="56" width="288" height="47"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e2F-Yg-v3r">
-                                        <rect key="frame" x="27" y="111" width="288" height="333.5"/>
+                                        <rect key="frame" x="27.5" y="111" width="288" height="334"/>
                                         <attributedString key="attributedText">
                                             <fragment content="   ">
                                                 <attributes>
-                                                    <font key="NSFont" size="16" name=".SFNSText"/>
+                                                    <font key="NSFont" metaFont="system" size="16"/>
                                                     <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" lineSpacing="3" lineHeightMultiple="1" tighteningFactorForTruncation="0.0"/>
                                                 </attributes>
                                             </fragment>
@@ -363,43 +357,46 @@ The game comes preloaded with already achieved high scores and displays only the
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kc2-Cg-dBu">
-                                <rect key="frame" x="16" y="78.5" width="343" height="408"/>
+                                <rect key="frame" x="16" y="79" width="343" height="407.5"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="kc2-Cg-dBu" secondAttribute="height" multiplier="0.841" id="6vY-d1-YjJ"/>
+                                </constraints>
                             </view>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2zW-Tp-Kzv" userLabel="Results Container View">
-                                <rect key="frame" x="16" y="78.5" width="343" height="408"/>
+                                <rect key="frame" x="16" y="79" width="343" height="407.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Congratulations! You Got a New High Score!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="saQ-YZ-IqG">
-                                        <rect key="frame" x="18" y="0.0" width="307" height="58"/>
+                                        <rect key="frame" x="17.5" y="0.0" width="308" height="58"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="22"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Top Score:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="3TX-gJ-fGC">
-                                        <rect key="frame" x="18" y="144" width="307" height="40"/>
+                                        <rect key="frame" x="17.5" y="144" width="308" height="40"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your Score:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="hxh-1Q-Yeg">
-                                        <rect key="frame" x="18" y="192.5" width="307" height="40"/>
+                                        <rect key="frame" x="17.5" y="192" width="308" height="40"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rank:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="7KL-6Q-mqL">
-                                        <rect key="frame" x="18" y="240" width="307" height="40"/>
+                                        <rect key="frame" x="17.5" y="240" width="308" height="40"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total Play Time:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="1Q8-CX-TtS">
-                                        <rect key="frame" x="18" y="288.5" width="307" height="40"/>
+                                        <rect key="frame" x="17.5" y="288" width="308" height="40"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KXd-YD-6fH">
-                                        <rect key="frame" x="7.5" y="355" width="327.5" height="45.5"/>
+                                        <rect key="frame" x="8" y="355" width="327" height="44.5"/>
                                         <color key="backgroundColor" red="0.46274509803921571" green="0.2627450980392157" blue="0.0" alpha="0.59535530821917804" colorSpace="calibratedRGB"/>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <state key="normal" title="Save Score"/>
@@ -408,7 +405,7 @@ The game comes preloaded with already achieved high scores and displays only the
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Results" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="oTa-R4-mTG">
-                                        <rect key="frame" x="18" y="95.5" width="307" height="40"/>
+                                        <rect key="frame" x="17.5" y="96" width="308" height="40"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="19"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
@@ -443,7 +440,7 @@ The game comes preloaded with already achieved high scores and displays only the
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Score: 0" textAlignment="center" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="yFZ-lK-pRe">
-                                <rect key="frame" x="61" y="33" width="253.5" height="40.5"/>
+                                <rect key="frame" x="60.5" y="32.5" width="254" height="41"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="21"/>
                                 <color key="textColor" red="0.97254901959999995" green="0.97254901959999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -461,7 +458,7 @@ The game comes preloaded with already achieved high scores and displays only the
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0CV-wk-nFC">
-                                <rect key="frame" x="12.5" y="33" width="41" height="40.5"/>
+                                <rect key="frame" x="12" y="32.5" width="41" height="41"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="0CV-wk-nFC" secondAttribute="height" multiplier="1:1" id="PST-CM-aOo"/>
                                 </constraints>
@@ -471,7 +468,7 @@ The game comes preloaded with already achieved high scores and displays only the
                                 </connections>
                             </button>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Game Paused" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="LBt-HE-OZZ">
-                                <rect key="frame" x="127" y="321.5" width="121" height="24"/>
+                                <rect key="frame" x="126.5" y="321.5" width="122" height="24"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
@@ -480,31 +477,31 @@ The game comes preloaded with already achieved high scores and displays only the
                                 <rect key="frame" x="0.0" y="575" width="375" height="92"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="qQR-n0-zIU">
-                                        <rect key="frame" x="204" y="65.5" width="84" height="18"/>
+                                        <rect key="frame" x="203.5" y="66" width="84" height="18"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <color key="textColor" red="0.97254901959999995" green="0.97254901959999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="High Scores" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="K2B-x7-hae">
-                                        <rect key="frame" x="9" y="65.5" width="84" height="18"/>
+                                        <rect key="frame" x="8.5" y="66" width="84" height="18"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <color key="textColor" red="0.97254901959999995" green="0.97254901959999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Help" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="xth-PP-Kpb">
-                                        <rect key="frame" x="289.5" y="65.5" width="84" height="18"/>
+                                        <rect key="frame" x="290" y="66" width="84" height="18"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <color key="textColor" red="0.97254901959999995" green="0.97254901959999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Deal Again" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="4qy-zt-Jyo">
-                                        <rect key="frame" x="109.5" y="65.5" width="84" height="18"/>
+                                        <rect key="frame" x="110" y="66" width="84" height="18"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <color key="textColor" red="0.97254901959999995" green="0.97254901959999995" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="CRF-AT-Dd8" userLabel="High Scores Button">
-                                        <rect key="frame" x="0.0" y="7.5" width="101.5" height="58"/>
+                                        <rect key="frame" x="0.0" y="8" width="101.5" height="58"/>
                                         <state key="normal" image="HighScores">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -513,7 +510,7 @@ The game comes preloaded with already achieved high scores and displays only the
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="w7v-lk-Q9j" userLabel="Deal Again Button">
-                                        <rect key="frame" x="101.5" y="7.5" width="101.5" height="58"/>
+                                        <rect key="frame" x="101.5" y="8" width="101" height="58"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <state key="normal" image="Deal Again">
                                             <color key="titleColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -523,7 +520,7 @@ The game comes preloaded with already achieved high scores and displays only the
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="ehZ-zc-4X5" userLabel="Help Button">
-                                        <rect key="frame" x="289" y="7.5" width="86.5" height="58"/>
+                                        <rect key="frame" x="289" y="8" width="86" height="58"/>
                                         <state key="normal" image="Help">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -532,7 +529,7 @@ The game comes preloaded with already achieved high scores and displays only the
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bww-n5-yeA" userLabel="Settings Button">
-                                        <rect key="frame" x="203" y="7.5" width="86" height="58"/>
+                                        <rect key="frame" x="202.5" y="8" width="86.5" height="58"/>
                                         <state key="normal" image="Settings"/>
                                         <connections>
                                             <segue destination="7R1-oN-8a9" kind="presentation" modalPresentationStyle="overCurrentContext" modalTransitionStyle="crossDissolve" id="tSk-ne-nXg"/>
@@ -569,7 +566,7 @@ The game comes preloaded with already achieved high scores and displays only the
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1x" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="N5l-oK-Dvs">
-                                <rect key="frame" x="339" y="33" width="20" height="40.5"/>
+                                <rect key="frame" x="339" y="32.5" width="20" height="41"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="21"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
@@ -601,7 +598,7 @@ The game comes preloaded with already achieved high scores and displays only the
                             <constraint firstItem="nIk-5E-S66" firstAttribute="height" secondItem="Z9w-Be-wvf" secondAttribute="height" multiplier="0.137931" id="XSr-nA-0fP"/>
                             <constraint firstItem="CRF-AT-Dd8" firstAttribute="width" secondItem="InC-nD-nSb" secondAttribute="width" multiplier="0.27" id="YHn-Ea-Xbh"/>
                             <constraint firstItem="yFZ-lK-pRe" firstAttribute="centerX" secondItem="Z9w-Be-wvf" secondAttribute="centerX" id="YOd-dR-kSB"/>
-                            <constraint firstItem="kc2-Cg-dBu" firstAttribute="height" secondItem="Z9w-Be-wvf" secondAttribute="height" multiplier="0.611694" id="aSL-KC-IYH"/>
+                            <constraint firstItem="kc2-Cg-dBu" firstAttribute="height" relation="lessThanOrEqual" secondItem="Z9w-Be-wvf" secondAttribute="height" multiplier="0.611694" id="aSL-KC-IYH"/>
                             <constraint firstAttribute="bottom" secondItem="XWl-lP-XU4" secondAttribute="bottom" id="aku-4y-AhJ"/>
                             <constraint firstItem="8Gz-kg-ubg" firstAttribute="centerX" secondItem="Z9w-Be-wvf" secondAttribute="centerX" multiplier="0.541333" id="al9-RN-qrQ"/>
                             <constraint firstItem="XWl-lP-XU4" firstAttribute="top" secondItem="InC-nD-nSb" secondAttribute="top" id="bf4-2K-aaO"/>
@@ -661,14 +658,14 @@ The game comes preloaded with already achieved high scores and displays only the
                         <inset key="separatorInset" minX="15" minY="0.0" maxX="15" maxY="0.0"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Score Cell" focusStyle="custom" id="Pxl-F6-9aR">
-                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="50" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Pxl-F6-9aR" id="NhF-LK-fq7">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="__" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Hx0-z7-fnH">
-                                            <rect key="frame" x="16" y="0.0" width="74" height="43"/>
+                                            <rect key="frame" x="16" y="0.0" width="74" height="44"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="74" id="Adu-i1-mys"/>
                                             </constraints>
@@ -677,13 +674,13 @@ The game comes preloaded with already achieved high scores and displays only the
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="__" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="uEi-Lx-mOO">
-                                            <rect key="frame" x="110" y="0.0" width="154" height="43"/>
+                                            <rect key="frame" x="110" y="0.0" width="154" height="44"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="__" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.20000000000000001" translatesAutoresizingMaskIntoConstraints="NO" id="8Vb-J8-KwE">
-                                            <rect key="frame" x="271" y="0.0" width="88" height="43"/>
+                                            <rect key="frame" x="271" y="0.0" width="88" height="44"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="88" id="fKf-rD-59s"/>
                                             </constraints>
@@ -736,7 +733,7 @@ The game comes preloaded with already achieved high scores and displays only the
                                 <rect key="frame" x="16" y="149" width="343" height="369"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tYl-kr-i2n">
-                                        <rect key="frame" x="3" y="4" width="50" height="50"/>
+                                        <rect key="frame" x="3" y="3.5" width="50" height="50"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="tYl-kr-i2n" secondAttribute="height" multiplier="1:1" id="tKc-1o-yJK"/>
                                         </constraints>
@@ -747,31 +744,31 @@ The game comes preloaded with already achieved high scores and displays only the
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="High Score Tag:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="6kA-es-Cc7">
-                                        <rect key="frame" x="8.5" y="56.5" width="327.5" height="46.5"/>
+                                        <rect key="frame" x="8" y="56" width="327" height="47"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Score:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Ja3-es-6Zq">
-                                        <rect key="frame" x="8.5" y="111.5" width="327.5" height="47"/>
+                                        <rect key="frame" x="8" y="111" width="327" height="47"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rank:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="13d-uW-JRI">
-                                        <rect key="frame" x="8.5" y="166" width="327.5" height="47"/>
+                                        <rect key="frame" x="8" y="166" width="327" height="47"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total Play Time:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="R45-k5-mI0">
-                                        <rect key="frame" x="8.5" y="221" width="327.5" height="46.5"/>
+                                        <rect key="frame" x="8" y="221" width="327" height="47"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Achieved On:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="EcM-I5-0T3">
-                                        <rect key="frame" x="8.5" y="276" width="327.5" height="46.5"/>
+                                        <rect key="frame" x="8" y="276" width="327" height="47"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
@@ -874,16 +871,16 @@ The game comes preloaded with already achieved high scores and displays only the
                                         </connections>
                                     </button>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wsw-bk-woQ">
-                                        <rect key="frame" x="27" y="124.5" width="288" height="63"/>
+                                        <rect key="frame" x="27.5" y="124" width="288" height="63"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wood Theme (Light):" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qAI-au-e32">
-                                                <rect key="frame" x="8.5" y="16" width="215.5" height="31.5"/>
+                                                <rect key="frame" x="8" y="16" width="215" height="31"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="ucK-Jo-FyQ">
-                                                <rect key="frame" x="232" y="15.5" width="51" height="31"/>
+                                                <rect key="frame" x="232" y="16" width="51" height="31"/>
                                                 <connections>
                                                     <action selector="selectWoodTheme:" destination="7R1-oN-8a9" eventType="valueChanged" id="Tko-p3-Jby"/>
                                                 </connections>
@@ -900,16 +897,16 @@ The game comes preloaded with already achieved high scores and displays only the
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="i4h-F8-dg5">
-                                        <rect key="frame" x="27" y="194.5" width="288" height="63"/>
+                                        <rect key="frame" x="27.5" y="195" width="288" height="63"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wood Theme (Dark):" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5ka-Tj-O8l">
-                                                <rect key="frame" x="8.5" y="16.5" width="215.5" height="31"/>
+                                                <rect key="frame" x="8" y="16" width="215" height="31"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="M84-oC-Owh">
-                                                <rect key="frame" x="232" y="16.5" width="51" height="31"/>
+                                                <rect key="frame" x="232" y="16" width="51" height="31"/>
                                                 <connections>
                                                     <action selector="selectDarkTheme:" destination="7R1-oN-8a9" eventType="valueChanged" id="Apu-BA-RaT"/>
                                                 </connections>
@@ -926,10 +923,10 @@ The game comes preloaded with already achieved high scores and displays only the
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wAP-S6-3Yv">
-                                        <rect key="frame" x="27" y="266" width="288" height="62.5"/>
+                                        <rect key="frame" x="27.5" y="266" width="288" height="63"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Classic Theme:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ICG-Ak-Orn">
-                                                <rect key="frame" x="8.5" y="15" width="215.5" height="31.5"/>
+                                                <rect key="frame" x="8" y="16" width="215" height="31"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
@@ -952,7 +949,7 @@ The game comes preloaded with already achieved high scores and displays only the
                                         </constraints>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="btl-96-ecX">
-                                        <rect key="frame" x="57" y="56" width="228" height="47"/>
+                                        <rect key="frame" x="57.5" y="56" width="228" height="47"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
